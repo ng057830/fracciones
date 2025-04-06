@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FracciónMaster: Operaciones con Fracciones</title>
+  <!-- MathJax para renderizar fórmulas en LaTeX -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --primary: #7000FF;
+      --primary-light: #9a55ff;
+      --primary-dark: #5700c9;
+      --secondary: #00CFFF;
+      --success: #00E676;
+      --error: #FF3D71;
+      --warning: #FFAA00;
+      --background: #111120;
+      --surface: #1e1e35;
+      --surface-light: #2a2a45;
+      --text: #FFFFFF;
+      --text-secondary: #b0b0c0;
+      --accent: #FF3D9A;
+      --border-radius: 12px;
+      --shadow: 0 10px 30px rgba(112, 0, 255, 0.15);
+      --glow: 0 5px 20px rgba(112, 0, 255, 0.25);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+    }
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      margin-bottom: 10px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--text);
+    }
+    .logo-icon {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      width: 35px;
+      height: 35px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--glow);
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 10px;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: var(--border-radius);
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    nav a:hover, nav a.active {
+      background-color: var(--primary);
+      box-shadow: var(--glow);
+    }
+    .main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .card {
+      background-color: var(--surface);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--surface-light);
+      padding-bottom: 8px;
+    }
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--text);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 15px;
+      background: linear-gradient(45deg, var(--primary), var(--primary-light));
+      color: var(--text);
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      gap: 5px;
+    }
+    .btn:hover {
+      background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+      box-shadow: var(--glow);
+      transform: translateY(-2px);
+    }
+    .btn.secondary {
+      background: linear-gradient(45deg, var(--secondary), #5edeff);
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 10px;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 6px 10px;
+      background-color: var(--surface-light);
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .tab:hover {
+      background-color: var(--primary-dark);
+    }
+    .tab.active {
+      background-color: var(--primary);
+      box-shadow: var(--glow);
+    }
+    .fractions-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .fraction-problem {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .fraction {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .numerator, .denominator {
+      padding: 3px 5px;
+      min-width: 30px;
+      text-align: center;
+    }
+    .fraction-line {
+      height: 2px;
+      background-color: var(--text);
+      width: 100%;
+      margin: 2px 0;
+    }
+    .operation, .equals {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    /* Contenedor de transformación y nota (MathJax) */
+    .steps-container {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    /* Estilo para los inputs de respuesta */
+    .input {
+      background-color: var(--surface);
+      border: 2px solid var(--primary-light);
+      border-radius: 5px;
+      padding: 8px;
+      color: var(--text);
+      text-align: center;
+      width: 60px;
+      font-size: 1rem;
+      margin: 0 3px;
+    }
+    .input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(112, 0, 255, 0.25);
+    }
+    /* Controles */
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    /* Modal de ayuda */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    .modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-content {
+      background-color: var(--surface);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      max-width: 400px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      font-size: 0.9rem;
+    }
+    .modal.open .modal-content {
+      transform: translateY(0);
+    }
+    .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    /* Responsive para móviles */
+    @media (max-width: 480px) {
+      .card { padding: 10px; }
+      .header, nav a, .tab { font-size: 0.8rem; }
+      .fraction-problem { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Cabecera y navegación -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">𝑓</div>
+        <span>FracciónMaster</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="nav-link active" data-content="learn">Aprender</a></li>
+          <li><a href="#" class="nav-link" data-content="practice">Practicar</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main">
+      <!-- Sección Aprender -->
+      <div class="card tab-content active" id="learn">
+        <div class="card-header">
+          <div class="card-title">Operaciones con Fracciones</div>
+          <button class="btn secondary help-btn" id="show-help">?</button>
+        </div>
+        <div class="tabs" id="learn-tabs">
+          <div class="tab active" data-operation="suma">Suma</div>
+          <div class="tab" data-operation="resta">Resta</div>
+          <div class="tab" data-operation="multiplicacion">Multiplicación</div>
+          <div class="tab" data-operation="division">División</div>
+        </div>
+        <div class="fractions-container" id="learn-container">
+          <div class="fraction-problem">
+            <div class="fraction">
+              <div class="numerator" id="num1">3</div>
+              <div class="fraction-line"></div>
+              <div class="denominator" id="den1">6</div>
+            </div>
+            <div class="operation" id="learn-op">+</div>
+            <div class="fraction">
+              <div class="numerator" id="num2">5</div>
+              <div class="fraction-line"></div>
+              <div class="denominator" id="den2">8</div>
+            </div>
+          </div>
+          <div class="steps-container" id="steps">
+            <!-- Se mostrará la transformación completa con nota -->
+          </div>
+          <div class="controls">
+            <button class="btn" id="new-example-learn">Nuevo Ejemplo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección Practicar -->
+      <div class="card tab-content" id="practice">
+        <div class="card-header">
+          <div class="card-title">Practica con Fracciones</div>
+        </div>
+        <div class="tabs" id="practice-tabs">
+          <div class="tab active" data-practice="suma">Suma</div>
+          <div class="tab" data-practice="resta">Resta</div>
+          <div class="tab" data-practice="multiplicacion">Multiplicación</div>
+          <div class="tab" data-practice="division">División</div>
+        </div>
+        <div class="fractions-container" id="practice-container">
+          <div class="fraction-problem">
+            <div class="fraction">
+              <div class="numerator" id="practice-num1">2</div>
+              <div class="fraction-line"></div>
+              <div class="denominator" id="practice-den1">3</div>
+            </div>
+            <div class="operation" id="practice-op">+</div>
+            <div class="fraction">
+              <div class="numerator" id="practice-num2">1</div>
+              <div class="fraction-line"></div>
+              <div class="denominator" id="practice-den2">4</div>
+            </div>
+            <div class="equals">=</div>
+            <div class="fraction">
+              <input type="text" id="practice-numResult" class="input" placeholder="Num" />
+              <div class="fraction-line"></div>
+              <input type="text" id="practice-denResult" class="input" placeholder="Den" />
+            </div>
+          </div>
+          <div class="controls">
+            <button class="btn" id="new-example-practice">Nuevo Ejemplo</button>
+            <button class="btn secondary" id="check-answer">Comprobar Respuesta</button>
+          </div>
+          <div class="steps-container" id="practice-feedback"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal de ayuda -->
+  <div class="modal" id="help-modal">
+    <div class="modal-content">
+      <button class="modal-close" id="close-help">&times;</button>
+      <h2>Ayuda</h2>
+      <p>En "Aprender" verás la transformación completa en una sola línea. Por ejemplo:</p>
+      <p style="text-align: center;">$$\frac{3}{6}+\frac{5}{8}=\frac{3\\times4}{6\\times4}+\frac{5\\times3}{8\\times3}=\frac{12}{24}+\frac{15}{24}=\frac{27}{24}=\frac{9}{1}$$</p>
+      <p>Multiplicamos por 4 y 3 porque el MCM de 6 y 8 es 24.</p>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales
+    let learnOperation = "suma";
+    let practiceOperation = "suma";
+    let learnProblem = {};
+    let practiceProblem = {};
+    let practiceDifficulty = 1; // 1: fácil, 2: medio, 3: difícil
+
+    // Funciones matemáticas auxiliares
+    function gcd(a, b) {
+      while (b) { [a, b] = [b, a % b]; }
+      return a;
+    }
+    function lcm(a, b) {
+      return (a * b) / gcd(a, b);
+    }
+    function simplify(num, den) {
+      let divisor = gcd(Math.abs(num), Math.abs(den));
+      return { num: num / divisor, den: den / divisor };
+    }
+
+    // Genera un problema garantizando que el resultado (simplificado) sea un entero positivo
+    function generateProblem(operation, difficulty = 1) {
+      let problem, attempts = 0;
+      do {
+        let numMin = 1, numMax = difficulty === 1 ? 6 : (difficulty === 2 ? 10 : 15);
+        let denMin = 2, denMax = difficulty === 1 ? 8 : (difficulty === 2 ? 12 : 20);
+        let n1 = Math.floor(Math.random() * (numMax - numMin + 1)) + numMin;
+        let d1 = Math.floor(Math.random() * (denMax - denMin + 1)) + denMin;
+        let n2 = Math.floor(Math.random() * (numMax - numMin + 1)) + numMin;
+        let d2 = Math.floor(Math.random() * (denMax - denMin + 1)) + denMin;
+        problem = { n1, d1, n2, d2 };
+        let common = lcm(d1, d2);
+        if (operation === "suma") {
+          let sum = n1 * (common / d1) + n2 * (common / d2);
+          if (sum % common === 0 && sum > 0) break;
+        } else if (operation === "resta") {
+          let diff = n1 * (common / d1) - n2 * (common / d2);
+          if (diff % common === 0 && diff > 0) break;
+        } else if (operation === "multiplicacion") {
+          let product = n1 * n2;
+          let denom = d1 * d2;
+          let result = simplify(product, denom);
+          if (result.den === 1 && result.num > 0) break;
+        } else if (operation === "division") {
+          let num = n1 * d2;
+          let denom = d1 * n2;
+          let result = simplify(num, denom);
+          if (result.den === 1 && result.num > 0) break;
+        }
+        attempts++;
+      } while (attempts < 100);
+      return problem;
+    }
+
+    // Genera la transformación en una única línea con nota, usando MathJax
+    function generateLearnSteps(problem) {
+      const { n1, d1, n2, d2 } = problem;
+      if (learnOperation === "suma" || learnOperation === "resta") {
+        let common = lcm(d1, d2);
+        let mult1 = common / d1;
+        let mult2 = common / d2;
+        let conv1 = n1 * mult1;
+        let conv2 = n2 * mult2;
+        let opSymbol = (learnOperation === "suma") ? '+' : '−';
+        let combined = (learnOperation === "suma") ? conv1 + conv2 : conv1 - conv2;
+        let result = simplify(combined, common);
+        let transformation = `$$\\frac{${n1}}{${d1}} ${opSymbol} \\frac{${n2}}{${d2}} = \\frac{${n1}\\times${mult1}}{${d1}\\times${mult1}} ${opSymbol} \\frac{${n2}\\times${mult2}}{${d2}\\times${mult2}} = \\frac{${conv1}}{${common}} ${opSymbol} \\frac{${conv2}}{${common}} = \\frac{${combined}}{${common}} = \\frac{${result.num}}{${result.den}}$$`;
+        let note = `Multiplicamos por ${mult1} y ${mult2} porque el MCM de ${d1} y ${d2} es ${common}.`;
+        return [transformation, note];
+      } else if (learnOperation === "multiplicacion") {
+        let product = multiplyFractions(n1, d1, n2, d2);
+        let transformation = `$$\\frac{${n1}}{${d1}} \\times \\frac{${n2}}{${d2}} = \\frac{${n1}\\times${n2}}{${d1}\\times${d2}} = \\frac{${product.num}}{${product.den}}$$`;
+        return [transformation];
+      } else if (learnOperation === "division") {
+        let product = divideFractions(n1, d1, n2, d2);
+        let transformation = `$$\\frac{${n1}}{${d1}} \\div \\frac{${n2}}{${d2}} = \\frac{${n1}}{${d1}} \\times \\frac{${d2}}{${n2}} = \\frac{${n1}\\times${d2}}{${d1}\\times${n2}} = \\frac{${product.num}}{${product.den}}$$`;
+        return [transformation];
+      }
+    }
+
+    // Muestra la transformación en "Aprender"
+    function displayLearnProblem(problem) {
+      document.getElementById("num1").innerText = problem.n1;
+      document.getElementById("den1").innerText = problem.d1;
+      document.getElementById("num2").innerText = problem.n2;
+      document.getElementById("den2").innerText = problem.d2;
+      let opSymbol = (learnOperation === "suma") ? "+" :
+                     (learnOperation === "resta") ? "−" :
+                     (learnOperation === "multiplicacion") ? "×" : "÷";
+      document.getElementById("learn-op").innerText = opSymbol;
+      const steps = generateLearnSteps(problem);
+      const container = document.getElementById("steps");
+      container.innerHTML = "";
+      steps.forEach(step => {
+        let div = document.createElement("div");
+        div.innerHTML = step;
+        container.appendChild(div);
+      });
+      if (window.MathJax) { MathJax.typeset(); }
+    }
+
+    // Actualiza la interfaz en "Practicar" y limpia los inputs
+    function displayPracticeProblem(problem) {
+      document.getElementById("practice-num1").innerText = problem.n1;
+      document.getElementById("practice-den1").innerText = problem.d1;
+      document.getElementById("practice-num2").innerText = problem.n2;
+      document.getElementById("practice-den2").innerText = problem.d2;
+      document.getElementById("practice-numResult").value = "";
+      document.getElementById("practice-denResult").value = "";
+      let opSymbol = (practiceOperation === "suma") ? "+" :
+                     (practiceOperation === "resta") ? "−" :
+                     (practiceOperation === "multiplicacion") ? "×" : "÷";
+      document.getElementById("practice-op").innerText = opSymbol;
+      document.getElementById("practice-feedback").innerHTML = "";
+    }
+
+    // Comprueba la respuesta en "Practicar" y, si es incorrecta, muestra 3 pistas sin revelar la solución
+    function checkPracticeAnswer() {
+      const inputNum = parseInt(document.getElementById("practice-numResult").value);
+      const inputDen = parseInt(document.getElementById("practice-denResult").value);
+      let correct;
+      const { n1, d1, n2, d2 } = practiceProblem;
+      if (practiceOperation === "suma") {
+        correct = addFractions(n1, d1, n2, d2);
+      } else if (practiceOperation === "resta") {
+        correct = subtractFractions(n1, d1, n2, d2);
+      } else if (practiceOperation === "multiplicacion") {
+        correct = multiplyFractions(n1, d1, n2, d2);
+      } else if (practiceOperation === "division") {
+        correct = divideFractions(n1, d1, n2, d2);
+      }
+      const feedback = document.getElementById("practice-feedback");
+      // Se muestran pistas siempre sin dar la respuesta correcta
+      if (inputNum === correct.num && inputDen === correct.den) {
+        feedback.innerText = "¡Correcto!";
+        feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success');
+      } else {
+        feedback.innerHTML = `
+          <p>Pista 1: Revisa el MCM de los denominadores.</p>
+          <p>Pista 2: Verifica la conversión a denominador común.</p>
+          <p>Pista 3: Comprueba la suma/resta de los numeradores.</p>
+        `;
+        feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--warning');
+      }
+      feedback.style.display = "block";
+    }
+
+    // Manejo de la navegación principal
+    function switchContent(contentId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+      document.getElementById(contentId).classList.add("active");
+      document.querySelectorAll(".nav-link").forEach(link => link.classList.remove("active"));
+      document.querySelector(`.nav-link[data-content="${contentId}"]`).classList.add("active");
+    }
+
+    // Eventos al cargar el DOM
+    document.addEventListener("DOMContentLoaded", () => {
+      // Navegación principal
+      document.querySelectorAll(".nav-link").forEach(link => {
+        link.addEventListener("click", e => {
+          e.preventDefault();
+          switchContent(e.target.dataset.content);
+        });
+      });
+      // Pestañas en "Aprender"
+      document.querySelectorAll("#learn-tabs .tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll("#learn-tabs .tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          learnOperation = tab.dataset.operation;
+          learnProblem = generateProblem(learnOperation, 1);
+          displayLearnProblem(learnProblem);
+        });
+      });
+      // Pestañas en "Practicar"
+      document.querySelectorAll("#practice-tabs .tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll("#practice-tabs .tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          practiceOperation = tab.dataset.practice;
+          practiceProblem = generateProblem(practiceOperation, practiceDifficulty);
+          displayPracticeProblem(practiceProblem);
+        });
+      });
+      // Botón "Nuevo Ejemplo" en "Aprender"
+      document.getElementById("new-example-learn").addEventListener("click", () => {
+        learnProblem = generateProblem(learnOperation, 1);
+        displayLearnProblem(learnProblem);
+      });
+      // Botones en "Practicar"
+      document.getElementById("new-example-practice").addEventListener("click", () => {
+        practiceProblem = generateProblem(practiceOperation, practiceDifficulty);
+        displayPracticeProblem(practiceProblem);
+      });
+      document.getElementById("check-answer").addEventListener("click", checkPracticeAnswer);
+      // Modal de ayuda
+      document.getElementById("show-help").addEventListener("click", () => {
+        document.getElementById("help-modal").classList.add("open");
+      });
+      document.getElementById("close-help").addEventListener("click", () => {
+        document.getElementById("help-modal").classList.remove("open");
+      });
+      // Inicializa los primeros problemas
+      learnProblem = generateProblem(learnOperation, 1);
+      displayLearnProblem(learnProblem);
+      practiceProblem = generateProblem(practiceOperation, practiceDifficulty);
+      displayPracticeProblem(practiceProblem);
+    });
+  </script>
+</body>
+</html>
