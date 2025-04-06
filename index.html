@@ -14,12 +14,10 @@
       --secondary: #00CFFF;
       --success: #00E676;
       --error: #FF3D71;
-      --warning: #FFAA00;
       --background: #111120;
       --surface: #1e1e35;
       --surface-light: #2a2a45;
       --text: #FFFFFF;
-      --text-secondary: #b0b0c0;
       --accent: #FF3D9A;
       --border-radius: 12px;
       --shadow: 0 10px 30px rgba(112, 0, 255, 0.15);
@@ -386,7 +384,7 @@
     <div class="modal-content">
       <button class="modal-close" id="close-help">&times;</button>
       <h2>Ayuda</h2>
-      <p>En "Aprender" verás la transformación completa en una sola línea. Por ejemplo:</p>
+      <p>En "Aprender" se muestra la transformación completa en una sola línea. Por ejemplo:</p>
       <p style="text-align: center;">$$\frac{3}{6}+\frac{5}{8}=\frac{3\\times4}{6\\times4}+\frac{5\\times3}{8\\times3}=\frac{12}{24}+\frac{15}{24}=\frac{27}{24}=\frac{9}{1}$$</p>
       <p>Multiplicamos por 4 y 3 porque el MCM de 6 y 8 es 24.</p>
     </div>
@@ -447,7 +445,7 @@
       return problem;
     }
 
-    // Genera la transformación en una única línea con nota, usando MathJax
+    // Genera la transformación en una línea usando MathJax (para "Aprender")
     function generateLearnSteps(problem) {
       const { n1, d1, n2, d2 } = problem;
       if (learnOperation === "suma" || learnOperation === "resta") {
@@ -463,12 +461,12 @@
         let note = `Multiplicamos por ${mult1} y ${mult2} porque el MCM de ${d1} y ${d2} es ${common}.`;
         return [transformation, note];
       } else if (learnOperation === "multiplicacion") {
-        let product = multiplyFractions(n1, d1, n2, d2);
+        let product = simplify(n1 * n2, d1 * d2);
         let transformation = `$$\\frac{${n1}}{${d1}} \\times \\frac{${n2}}{${d2}} = \\frac{${n1}\\times${n2}}{${d1}\\times${d2}} = \\frac{${product.num}}{${product.den}}$$`;
         return [transformation];
       } else if (learnOperation === "division") {
-        let product = divideFractions(n1, d1, n2, d2);
-        let transformation = `$$\\frac{${n1}}{${d1}} \\div \\frac{${n2}}{${d2}} = \\frac{${n1}}{${d1}} \\times \\frac{${d2}}{${n2}} = \\frac{${n1}\\times${d2}}{${d1}\\times${n2}} = \\frac{${product.num}}{${product.den}}$$`;
+        let result = simplify(n1 * d2, d1 * n2);
+        let transformation = `$$\\frac{${n1}}{${d1}} \\div \\frac{${n2}}{${d2}} = \\frac{${n1}}{${d1}} \\times \\frac{${d2}}{${n2}} = \\frac{${n1}\\times${d2}}{${d1}\\times${n2}} = \\frac{${result.num}}{${result.den}}$$`;
         return [transformation];
       }
     }
@@ -509,33 +507,41 @@
       document.getElementById("practice-feedback").innerHTML = "";
     }
 
-    // Comprueba la respuesta en "Practicar" y, si es incorrecta, muestra 3 pistas sin revelar la solución
+    // Comprueba la respuesta en "Practicar" y muestra solo "¡Correcto!" o "Incorrecto"
     function checkPracticeAnswer() {
-      const inputNum = parseInt(document.getElementById("practice-numResult").value);
-      const inputDen = parseInt(document.getElementById("practice-denResult").value);
+      const numInput = document.getElementById("practice-numResult");
+      const denInput = document.getElementById("practice-denResult");
+      const feedback = document.getElementById("practice-feedback");
+
+      const inputNum = parseInt(numInput.value);
+      const inputDen = parseInt(denInput.value);
+      
+      // Si alguno de los campos está vacío, se notifica
+      if (isNaN(inputNum) || isNaN(inputDen)) {
+        feedback.innerHTML = "<p>Por favor, completa ambos campos.</p>";
+        feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
+        feedback.style.display = "block";
+        return;
+      }
+      
       let correct;
       const { n1, d1, n2, d2 } = practiceProblem;
       if (practiceOperation === "suma") {
-        correct = addFractions(n1, d1, n2, d2);
+        correct = simplify(n1 * (lcm(d1, d2) / d1) + n2 * (lcm(d1, d2) / d2), lcm(d1, d2));
       } else if (practiceOperation === "resta") {
-        correct = subtractFractions(n1, d1, n2, d2);
+        correct = simplify(n1 * (lcm(d1, d2) / d1) - n2 * (lcm(d1, d2) / d2), lcm(d1, d2));
       } else if (practiceOperation === "multiplicacion") {
-        correct = multiplyFractions(n1, d1, n2, d2);
+        correct = simplify(n1 * n2, d1 * d2);
       } else if (practiceOperation === "division") {
-        correct = divideFractions(n1, d1, n2, d2);
+        correct = simplify(n1 * d2, d1 * n2);
       }
-      const feedback = document.getElementById("practice-feedback");
-      // Se muestran pistas siempre sin dar la respuesta correcta
+      
       if (inputNum === correct.num && inputDen === correct.den) {
         feedback.innerText = "¡Correcto!";
         feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success');
       } else {
-        feedback.innerHTML = `
-          <p>Pista 1: Revisa el MCM de los denominadores.</p>
-          <p>Pista 2: Verifica la conversión a denominador común.</p>
-          <p>Pista 3: Comprueba la suma/resta de los numeradores.</p>
-        `;
-        feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--warning');
+        feedback.innerText = "Incorrecto";
+        feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
       }
       feedback.style.display = "block";
     }
