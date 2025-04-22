@@ -199,13 +199,6 @@
       font-weight: bold;
       color: var(--accent);
     }
-    /* Contenedor de transformación y nota (MathJax) */
-    .steps-container {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 0.9rem;
-    }
-    /* Estilo para los inputs de respuesta */
     .input {
       background-color: var(--surface);
       border: 2px solid var(--primary-light);
@@ -222,7 +215,6 @@
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(112, 0, 255, 0.25);
     }
-    /* Controles */
     .controls {
       display: flex;
       gap: 8px;
@@ -277,7 +269,6 @@
       font-size: 1.2rem;
       cursor: pointer;
     }
-    /* Responsive para móviles */
     @media (max-width: 480px) {
       .card { padding: 10px; }
       .header, nav a, .tab { font-size: 0.8rem; }
@@ -329,15 +320,12 @@
               <div class="denominator" id="den2">8</div>
             </div>
           </div>
-          <div class="steps-container" id="steps">
-            <!-- Se mostrará la transformación completa con nota -->
-          </div>
+          <div class="steps-container" id="steps"></div>
           <div class="controls">
             <button class="btn" id="new-example-learn">Nuevo Ejemplo</button>
           </div>
         </div>
       </div>
-
       <!-- Sección Practicar -->
       <div class="card tab-content" id="practice">
         <div class="card-header">
@@ -385,7 +373,9 @@
       <button class="modal-close" id="close-help">&times;</button>
       <h2>Ayuda</h2>
       <p>En "Aprender" se muestra la transformación completa en una sola línea. Por ejemplo:</p>
-      <p style="text-align: center;">$$\frac{3}{6}+\frac{5}{8}=\frac{3\\times4}{6\\times4}+\frac{5\\times3}{8\\times3}=\frac{12}{24}+\frac{15}{24}=\frac{27}{24}=\frac{9}{1}$$</p>
+      <p style="text-align: center;">
+        $$\frac{3}{6}+\frac{5}{8}=\frac{3\times4}{6\times4}+\frac{5\times3}{8\times3}=\frac{12}{24}+\frac{15}{24}=\frac{27}{24}=\frac{9}{8}$$
+      </p>
       <p>Multiplicamos por 4 y 3 porque el MCM de 6 y 8 es 24.</p>
     </div>
   </div>
@@ -400,99 +390,103 @@
 
     // Funciones matemáticas auxiliares
     function gcd(a, b) {
-      while (b) { [a, b] = [b, a % b]; }
+      a = Math.abs(a);
+      b = Math.abs(b);
+      while (b !== 0) {
+        [a, b] = [b, a % b];
+      }
       return a;
     }
+
     function lcm(a, b) {
-      return (a * b) / gcd(a, b);
+      return Math.abs(a * b) / gcd(a, b);
     }
+
     function simplify(num, den) {
-      let divisor = gcd(Math.abs(num), Math.abs(den));
+      if (den === 0) {
+        return { num: 0, den: 1 };
+      }
+      const divisor = gcd(num, den);
       return { num: num / divisor, den: den / divisor };
     }
 
-    // Genera un problema garantizando que el resultado (simplificado) sea un entero positivo
+    // Generar problema con fracciones irreducibles
     function generateProblem(operation, difficulty = 1) {
-      let problem, attempts = 0;
+      const numMin = 1, numMax = difficulty === 1 ? 6 : difficulty === 2 ? 10 : 15;
+      const denMin = 2, denMax = difficulty === 1 ? 8 : difficulty === 2 ? 12 : 20;
+      let n1, d1;
       do {
-        let numMin = 1, numMax = difficulty === 1 ? 6 : (difficulty === 2 ? 10 : 15);
-        let denMin = 2, denMax = difficulty === 1 ? 8 : (difficulty === 2 ? 12 : 20);
-        let n1 = Math.floor(Math.random() * (numMax - numMin + 1)) + numMin;
-        let d1 = Math.floor(Math.random() * (denMax - denMin + 1)) + denMin;
-        let n2 = Math.floor(Math.random() * (numMax - numMin + 1)) + numMin;
-        let d2 = Math.floor(Math.random() * (denMax - denMin + 1)) + denMin;
-        problem = { n1, d1, n2, d2 };
-        let common = lcm(d1, d2);
-        if (operation === "suma") {
-          let sum = n1 * (common / d1) + n2 * (common / d2);
-          if (sum % common === 0 && sum > 0) break;
-        } else if (operation === "resta") {
-          let diff = n1 * (common / d1) - n2 * (common / d2);
-          if (diff % common === 0 && diff > 0) break;
-        } else if (operation === "multiplicacion") {
-          let product = n1 * n2;
-          let denom = d1 * d2;
-          let result = simplify(product, denom);
-          if (result.den === 1 && result.num > 0) break;
-        } else if (operation === "division") {
-          let num = n1 * d2;
-          let denom = d1 * n2;
-          let result = simplify(num, denom);
-          if (result.den === 1 && result.num > 0) break;
-        }
-        attempts++;
-      } while (attempts < 100);
-      return problem;
+        n1 = Math.floor(Math.random() * (numMax - numMin + 1)) + numMin;
+        d1 = Math.floor(Math.random() * (denMax - denMin + 1)) + denMin;
+      } while (gcd(n1, d1) !== 1);
+      let n2, d2;
+      do {
+        n2 = Math.floor(Math.random() * (numMax - numMin + 1)) + numMin;
+        d2 = Math.floor(Math.random() * (denMax - denMin + 1)) + denMin;
+      } while (gcd(n2, d2) !== 1);
+      return { n1, d1, n2, d2 };
     }
 
-    // Genera la transformación en una línea usando MathJax (para "Aprender")
+    // Generar los pasos de "Aprender"
     function generateLearnSteps(problem) {
       const { n1, d1, n2, d2 } = problem;
       if (learnOperation === "suma" || learnOperation === "resta") {
-        let common = lcm(d1, d2);
-        let mult1 = common / d1;
-        let mult2 = common / d2;
-        let conv1 = n1 * mult1;
-        let conv2 = n2 * mult2;
-        let opSymbol = (learnOperation === "suma") ? '+' : '−';
-        let combined = (learnOperation === "suma") ? conv1 + conv2 : conv1 - conv2;
-        let result = simplify(combined, common);
-        let transformation = `$$\\frac{${n1}}{${d1}} ${opSymbol} \\frac{${n2}}{${d2}} = \\frac{${n1}\\times${mult1}}{${d1}\\times${mult1}} ${opSymbol} \\frac{${n2}\\times${mult2}}{${d2}\\times${mult2}} = \\frac{${conv1}}{${common}} ${opSymbol} \\frac{${conv2}}{${common}} = \\frac{${combined}}{${common}} = \\frac{${result.num}}{${result.den}}$$`;
-        let note = `Multiplicamos por ${mult1} y ${mult2} porque el MCM de ${d1} y ${d2} es ${common}.`;
+        const common = lcm(d1, d2);
+        const mult1 = common / d1;
+        const mult2 = common / d2;
+        const conv1 = n1 * mult1;
+        const conv2 = n2 * mult2;
+        const opSymbol = learnOperation === "suma" ? "+" : "−";
+        const combined = learnOperation === "suma" ? conv1 + conv2 : conv1 - conv2;
+        const result = simplify(combined, common);
+
+        const transformation =
+          `$$\\frac{${n1}}{${d1}} ${opSymbol} \\frac{${n2}}{${d2}} = ` +
+          `\\frac{${n1}\\times${mult1}}{${d1}\\times${mult1}} ${opSymbol} ` +
+          `\\frac{${n2}\\times${mult2}}{${d2}\\times${mult2}} = ` +
+          `\\frac{${conv1}}{${common}} ${opSymbol} \\frac{${conv2}}{${common}} = ` +
+          `\\frac{${combined}}{${common}} = \\frac{${result.num}}{${result.den}}$$`;
+        const note = `Nota: Simplificamos usando MCD(${combined}, ${common}) = ${gcd(combined, common)}.`;
         return [transformation, note];
       } else if (learnOperation === "multiplicacion") {
-        let product = simplify(n1 * n2, d1 * d2);
-        let transformation = `$$\\frac{${n1}}{${d1}} \\times \\frac{${n2}}{${d2}} = \\frac{${n1}\\times${n2}}{${d1}\\times${d2}} = \\frac{${product.num}}{${product.den}}$$`;
-        return [transformation];
-      } else if (learnOperation === "division") {
-        let result = simplify(n1 * d2, d1 * n2);
-        let transformation = `$$\\frac{${n1}}{${d1}} \\div \\frac{${n2}}{${d2}} = \\frac{${n1}}{${d1}} \\times \\frac{${d2}}{${n2}} = \\frac{${n1}\\times${d2}}{${d1}\\times${n2}} = \\frac{${result.num}}{${result.den}}$$`;
-        return [transformation];
+        const prodNum = problem.n1 * problem.n2;
+        const prodDen = problem.d1 * problem.d2;
+        const result = simplify(prodNum, prodDen);
+        return [`$$\\frac{${problem.n1}}{${problem.d1}} \\times \\frac{${problem.n2}}{${problem.d2}} = ` +
+                `\\frac{${prodNum}}{${prodDen}} = \\frac{${result.num}}{${result.den}}$$`];
+      } else {
+        const num = problem.n1 * problem.d2;
+        const den = problem.d1 * problem.n2;
+        const result = simplify(num, den);
+        return [`$$\\frac{${problem.n1}}{${problem.d1}} \\div \\frac{${problem.n2}}{${problem.d2}} = ` +
+                `\\frac{${problem.n1}}{${problem.d1}} \\times \\frac{${problem.d2}}{${problem.n2}} = ` +
+                `\\frac{${num}}{${den}} = \\frac{${result.num}}{${result.den}}$$`];
       }
     }
 
-    // Muestra la transformación en "Aprender"
+    // Mostrar problema en "Aprender"
     function displayLearnProblem(problem) {
       document.getElementById("num1").innerText = problem.n1;
       document.getElementById("den1").innerText = problem.d1;
       document.getElementById("num2").innerText = problem.n2;
       document.getElementById("den2").innerText = problem.d2;
-      let opSymbol = (learnOperation === "suma") ? "+" :
-                     (learnOperation === "resta") ? "−" :
-                     (learnOperation === "multiplicacion") ? "×" : "÷";
-      document.getElementById("learn-op").innerText = opSymbol;
+      document.getElementById("learn-op").innerText =
+        learnOperation === "suma" ? "+" :
+        learnOperation === "resta" ? "−" :
+        learnOperation === "multiplicacion" ? "×" : "÷";
+
       const steps = generateLearnSteps(problem);
       const container = document.getElementById("steps");
       container.innerHTML = "";
-      steps.forEach(step => {
-        let div = document.createElement("div");
-        div.innerHTML = step;
+      steps.forEach(s => {
+        const div = document.createElement("div");
+        div.innerHTML = s;
         container.appendChild(div);
       });
-      if (window.MathJax) { MathJax.typeset(); }
+      if (window.MathJax) MathJax.typeset();
     }
 
-    // Actualiza la interfaz en "Practicar" y limpia los inputs
+    // Mostrar problema en "Practicar"
     function displayPracticeProblem(problem) {
       document.getElementById("practice-num1").innerText = problem.n1;
       document.getElementById("practice-den1").innerText = problem.d1;
@@ -500,53 +494,50 @@
       document.getElementById("practice-den2").innerText = problem.d2;
       document.getElementById("practice-numResult").value = "";
       document.getElementById("practice-denResult").value = "";
-      let opSymbol = (practiceOperation === "suma") ? "+" :
-                     (practiceOperation === "resta") ? "−" :
-                     (practiceOperation === "multiplicacion") ? "×" : "÷";
-      document.getElementById("practice-op").innerText = opSymbol;
+      document.getElementById("practice-op").innerText =
+        practiceOperation === "suma" ? "+" :
+        practiceOperation === "resta" ? "−" :
+        practiceOperation === "multiplicacion" ? "×" : "÷";
       document.getElementById("practice-feedback").innerHTML = "";
     }
-
-    // Comprueba la respuesta en "Practicar" y muestra solo "¡Correcto!" o "Incorrecto"
+    // Verificar respuesta en "Practicar"
     function checkPracticeAnswer() {
-      const numInput = document.getElementById("practice-numResult");
-      const denInput = document.getElementById("practice-denResult");
+      const inputNum = parseInt(document.getElementById("practice-numResult").value, 10);
+      const inputDen = parseInt(document.getElementById("practice-denResult").value, 10);
       const feedback = document.getElementById("practice-feedback");
 
-      const inputNum = parseInt(numInput.value);
-      const inputDen = parseInt(denInput.value);
-      
-      // Si alguno de los campos está vacío, se notifica
+      // Si falta algún campo
       if (isNaN(inputNum) || isNaN(inputDen)) {
         feedback.innerHTML = "<p>Por favor, completa ambos campos.</p>";
         feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
-        feedback.style.display = "block";
         return;
       }
-      
-      let correct;
+
       const { n1, d1, n2, d2 } = practiceProblem;
-      if (practiceOperation === "suma") {
-        correct = simplify(n1 * (lcm(d1, d2) / d1) + n2 * (lcm(d1, d2) / d2), lcm(d1, d2));
-      } else if (practiceOperation === "resta") {
-        correct = simplify(n1 * (lcm(d1, d2) / d1) - n2 * (lcm(d1, d2) / d2), lcm(d1, d2));
+      let correct;
+
+      if (practiceOperation === "suma" || practiceOperation === "resta") {
+        const common = lcm(d1, d2);
+        const value = practiceOperation === "suma"
+          ? n1 * (common / d1) + n2 * (common / d2)
+          : n1 * (common / d1) - n2 * (common / d2);
+        correct = simplify(value, common);
       } else if (practiceOperation === "multiplicacion") {
         correct = simplify(n1 * n2, d1 * d2);
-      } else if (practiceOperation === "division") {
+      } else {
         correct = simplify(n1 * d2, d1 * n2);
       }
-      
+
       if (inputNum === correct.num && inputDen === correct.den) {
         feedback.innerText = "¡Correcto!";
         feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success');
       } else {
-        feedback.innerText = "Incorrecto";
+        feedback.innerText = `Incorrecto. La respuesta es ${correct.num}/${correct.den}.`;
         feedback.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
       }
-      feedback.style.display = "block";
     }
 
-    // Manejo de la navegación principal
+    // Cambio entre secciones "Aprender" y "Practicar"
     function switchContent(contentId) {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
       document.getElementById(contentId).classList.add("active");
@@ -554,7 +545,7 @@
       document.querySelector(`.nav-link[data-content="${contentId}"]`).classList.add("active");
     }
 
-    // Eventos al cargar el DOM
+    // Inicialización de la aplicación
     document.addEventListener("DOMContentLoaded", () => {
       // Navegación principal
       document.querySelectorAll(".nav-link").forEach(link => {
@@ -563,6 +554,7 @@
           switchContent(e.target.dataset.content);
         });
       });
+
       // Pestañas en "Aprender"
       document.querySelectorAll("#learn-tabs .tab").forEach(tab => {
         tab.addEventListener("click", () => {
@@ -573,6 +565,7 @@
           displayLearnProblem(learnProblem);
         });
       });
+
       // Pestañas en "Practicar"
       document.querySelectorAll("#practice-tabs .tab").forEach(tab => {
         tab.addEventListener("click", () => {
@@ -583,17 +576,18 @@
           displayPracticeProblem(practiceProblem);
         });
       });
-      // Botón "Nuevo Ejemplo" en "Aprender"
+
+      // Botones de acción
       document.getElementById("new-example-learn").addEventListener("click", () => {
         learnProblem = generateProblem(learnOperation, 1);
         displayLearnProblem(learnProblem);
       });
-      // Botones en "Practicar"
       document.getElementById("new-example-practice").addEventListener("click", () => {
         practiceProblem = generateProblem(practiceOperation, practiceDifficulty);
         displayPracticeProblem(practiceProblem);
       });
       document.getElementById("check-answer").addEventListener("click", checkPracticeAnswer);
+
       // Modal de ayuda
       document.getElementById("show-help").addEventListener("click", () => {
         document.getElementById("help-modal").classList.add("open");
@@ -601,7 +595,8 @@
       document.getElementById("close-help").addEventListener("click", () => {
         document.getElementById("help-modal").classList.remove("open");
       });
-      // Inicializa los primeros problemas
+
+      // Problemas iniciales
       learnProblem = generateProblem(learnOperation, 1);
       displayLearnProblem(learnProblem);
       practiceProblem = generateProblem(practiceOperation, practiceDifficulty);
