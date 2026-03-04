@@ -1,612 +1,536 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FracciónMaster: Operaciones con Fracciones</title>
-  <!-- MathJax para renderizar fórmulas en LaTeX -->
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <style>
-    :root {
-      --primary: #7000FF;
-      --primary-light: #9a55ff;
-      --primary-dark: #5700c9;
-      --secondary: #00CFFF;
-      --success: #00E676;
-      --error: #FF3D71;
-      --background: #111120;
-      --surface: #1e1e35;
-      --surface-light: #2a2a45;
-      --text: #FFFFFF;
-      --accent: #FF3D9A;
-      --border-radius: 12px;
-      --shadow: 0 10px 30px rgba(112, 0, 255, 0.15);
-      --glow: 0 5px 20px rgba(112, 0, 255, 0.25);
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
-    }
-    body {
-      background-color: var(--background);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.6;
-    }
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 10px;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      margin-bottom: 10px;
-      border-bottom: 2px solid var(--primary-light);
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--text);
-    }
-    .logo-icon {
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
-      width: 35px;
-      height: 35px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--glow);
-    }
-    nav ul {
-      display: flex;
-      list-style: none;
-      gap: 10px;
-    }
-    nav a {
-      color: var(--text);
-      text-decoration: none;
-      padding: 6px 10px;
-      border-radius: var(--border-radius);
-      transition: all 0.3s ease;
-      font-size: 0.9rem;
-    }
-    nav a:hover, nav a.active {
-      background-color: var(--primary);
-      box-shadow: var(--glow);
-    }
-    .main {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .card {
-      background-color: var(--surface);
-      border-radius: var(--border-radius);
-      padding: 15px;
-      box-shadow: var(--shadow);
-      transition: all 0.3s ease;
-      overflow: hidden;
-    }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--glow);
-    }
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      border-bottom: 1px solid var(--surface-light);
-      padding-bottom: 8px;
-    }
-    .card-title {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--text);
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 15px;
-      background: linear-gradient(45deg, var(--primary), var(--primary-light));
-      color: var(--text);
-      border: none;
-      border-radius: var(--border-radius);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: var(--shadow);
-      gap: 5px;
-    }
-    .btn:hover {
-      background: linear-gradient(45deg, var(--primary-dark), var(--primary));
-      box-shadow: var(--glow);
-      transform: translateY(-2px);
-    }
-    .btn.secondary {
-      background: linear-gradient(45deg, var(--secondary), #5edeff);
-    }
-    .tabs {
-      display: flex;
-      margin-bottom: 10px;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-    .tab {
-      padding: 6px 10px;
-      background-color: var(--surface-light);
-      border-radius: var(--border-radius);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 0.9rem;
-    }
-    .tab:hover {
-      background-color: var(--primary-dark);
-    }
-    .tab.active {
-      background-color: var(--primary);
-      box-shadow: var(--glow);
-    }
-    .fractions-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-    }
-    .fraction-problem {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      font-size: 1.2rem;
-      flex-wrap: wrap;
-    }
-    .fraction {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    .numerator, .denominator {
-      padding: 3px 5px;
-      min-width: 30px;
-      text-align: center;
-    }
-    .fraction-line {
-      height: 2px;
-      background-color: var(--text);
-      width: 100%;
-      margin: 2px 0;
-    }
-    .operation, .equals {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--accent);
-    }
-    .input {
-      background-color: var(--surface);
-      border: 2px solid var(--primary-light);
-      border-radius: 5px;
-      padding: 8px;
-      color: var(--text);
-      text-align: center;
-      width: 60px;
-      font-size: 1rem;
-      margin: 0 3px;
-    }
-    .input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(112, 0, 255, 0.25);
-    }
-    .controls {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s ease;
-    }
-    .modal.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-    .modal-content {
-      background-color: var(--surface);
-      border-radius: var(--border-radius);
-      padding: 15px;
-      max-width: 400px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      position: relative;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-      box-shadow: var(--shadow);
-      font-size: 0.9rem;
-    }
-    .modal.open .modal-content {
-      transform: translateY(0);
-    }
-    .modal-close {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-    @media (max-width: 480px) {
-      .card { padding: 10px; }
-      .header, nav a, .tab { font-size: 0.8rem; }
-      .fraction-problem { font-size: 1rem; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misión Fracciones: Suma y Simplifica</title>
+    <!-- Tailwind CSS para un diseño espectacular rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fuente amigable y divertida -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Librería para lanzar confeti al ganar -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4;
+            background-image: radial-gradient(#bbf7d0 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        /* Estilos personalizados para las fracciones */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            margin: 0 0.25rem;
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: #1e293b;
+        }
+        .frac-num {
+            padding: 0.1em 0.3em;
+            border-bottom: 4px solid currentColor;
+            width: 100%;
+            text-align: center;
+        }
+        .frac-den {
+            padding: 0.1em 0.3em;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Inputs de las fracciones */
+        .frac-input {
+            width: 3.5rem;
+            text-align: center;
+            border: 3px solid #cbd5e1;
+            border-radius: 0.5rem;
+            background: white;
+            font-weight: 900;
+            color: #4f46e5;
+            font-size: 1.5rem;
+            transition: all 0.2s ease;
+            -moz-appearance: textfield;
+        }
+        .frac-input::-webkit-outer-spin-button,
+        .frac-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .frac-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.3);
+            transform: scale(1.05);
+        }
+        .frac-input.error {
+            border-color: #ef4444;
+            color: #ef4444;
+            animation: shake 0.4s;
+        }
+        .frac-input.success {
+            border-color: #22c55e;
+            color: #16a34a;
+            background-color: #f0fdf4;
+            pointer-events: none;
+        }
+
+        /* Botones molones */
+        .btn-check {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-check:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+        .btn-check:active {
+            transform: translateY(1px);
+        }
+
+        /* Animaciones */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+        }
+        
+        .step-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .step-hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            position: absolute;
+            visibility: hidden;
+        }
+
+        .hint-text {
+            color: #ef4444;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+            display: none;
+            animation: popIn 0.3s ease forwards;
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <!-- Cabecera y navegación -->
-    <header class="header">
-      <div class="logo">
-        <div class="logo-icon">𝑓</div>
-        <span>FracciónMaster</span>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="#" class="nav-link active" data-content="learn">Aprender</a></li>
-          <li><a href="#" class="nav-link" data-content="practice">Practicar</a></li>
-        </ul>
-      </nav>
-    </header>
+<body class="min-h-screen py-8 px-4 flex flex-col items-center">
 
-    <!-- Contenido principal -->
-    <main class="main">
-      <!-- Sección Aprender -->
-      <div class="card tab-content active" id="learn">
-        <div class="card-header">
-          <div class="card-title">Operaciones con Fracciones</div>
-          <button class="btn secondary help-btn" id="show-help">?</button>
-        </div> <!-- .card-header -->
-        <div class="tabs" id="learn-tabs">
-          <div class="tab active" data-operation="suma">Suma</div>
-          <div class="tab" data-operation="resta">Resta</div>
-          <div class="tab" data-operation="multiplicacion">Multiplicación</div>
-          <div class="tab" data-operation="division">División</div>
+    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl border-4 border-indigo-100 overflow-hidden relative">
+        
+        <!-- Cabecera -->
+        <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 text-center text-white">
+            <h1 class="text-3xl sm:text-4xl font-black tracking-wide drop-shadow-md">🚀 Misión Fracciones</h1>
+            <p class="text-indigo-100 mt-2 font-bold text-lg">Paso a paso hacia el éxito</p>
         </div>
-        <div class="fractions-container" id="learn-container">
-          <div class="fraction-problem">
-            <div class="fraction">
-              <div class="numerator" id="num1">--</div>
-              <div class="fraction-line"></div>
-              <div class="denominator" id="den1">--</div>
-            </div>
-            <div class="operation" id="learn-op">+</div>
-            <div class="fraction">
-              <div class="numerator" id="num2">--</div>
-              <div class="fraction-line"></div>
-              <div class="denominator" id="den2">--</div>
-            </div>
-          </div>
-          <div class="steps-container" id="steps"></div>
-          <div class="controls">
-            <button class="btn" id="new-example-learn">Nuevo Ejemplo</button>
-          </div>
-        </div>
-      </div> <!-- end learn card -->
 
-      <!-- Sección Practicar -->
-      <div class="card tab-content" id="practice">
-        <div class="card-header">
-          <div class="card-title">Practica con Fracciones</div>
+        <!-- Progreso -->
+        <div class="flex justify-center gap-3 p-4 bg-indigo-50 border-b-2 border-indigo-100">
+            <div id="dot1" class="w-4 h-4 rounded-full bg-indigo-500 shadow-inner"></div>
+            <div id="dot2" class="w-4 h-4 rounded-full bg-gray-300"></div>
+            <div id="dot3" class="w-4 h-4 rounded-full bg-gray-300"></div>
+            <div id="dot4" class="w-4 h-4 rounded-full bg-gray-300"></div>
         </div>
-        <div class="tabs" id="practice-tabs">
-          <div class="tab active" data-practice="suma">Suma</div>
-          <div class="tab" data-practice="resta">Resta</div>
-          <div class="tab" data-practice="multiplicacion">Multiplicación</div>
-          <div class="tab" data-practice="division">División</div>
-        </div>
-        <div class="fractions-container" id="practice-container">
-          <div class="fraction-problem">
-            <div class="fraction">
-              <div class="numerator" id="practice-num1">--</div>
-              <div class="fraction-line"></div>
-              <div class="denominator" id="practice-den1">--</div>
-            </div>
-            <div class="operation" id="practice-op">+</div>
-            <div class="fraction">
-              <div class="numerator" id="practice-num2">--</div>
-              <div class="fraction-line"></div>
-              <div class="denominator" id="practice-den2">--</div>
-            </div>
-            <div class="equals">=</div>
-            <div class="fraction">
-              <input type="text" id="practice-numResult" class="input" placeholder="Num" />
-              <div class="fraction-line"></div>
-              <input type="text" id="practice-denResult" class="input" placeholder="Den" />
-            </div>
-          </div>
-          <div class="controls">
-            <button class="btn" id="new-example-practice">Nuevo Ejemplo</button>
-            <button class="btn secondary" id="check-answer">Comprobar Respuesta</button>
-          </div>
-          <div class="steps-container" id="practice-feedback"></div>
-        </div>
-      </div> <!-- end practice card -->
 
-    </main>
-  </div> <!-- end container -->
+        <!-- Área de Trabajo -->
+        <div class="p-6 sm:p-10 space-y-8">
+            
+            <!-- Problema Principal (Siempre visible) -->
+            <div class="flex justify-center items-center text-3xl sm:text-5xl font-bold bg-white border-4 border-dashed border-pink-300 rounded-3xl p-6 shadow-sm">
+                <div class="frac text-indigo-700">
+                    <div class="frac-num" id="main-n1">?</div>
+                    <div class="frac-den" id="main-d1">?</div>
+                </div>
+                <span class="text-pink-500 mx-2 sm:mx-4">+</span>
+                <div class="frac text-purple-700">
+                    <div class="frac-num" id="main-n2">?</div>
+                    <div class="frac-den" id="main-d2">?</div>
+                </div>
+            </div>
 
-  <!-- Modal de Ayuda -->
-  <div class="modal" id="help-modal">
-    <div class="modal-content">
-      <button class="modal-close" id="close-help">&times;</button>
-      <h2>Ayuda</h2>
-      <p>En restas, asegúrate siempre de que la primera fracción sea mayor que la segunda para evitar negativos.</p>
-      <p>Ejemplo:</p>
-      <p style="text-align: center;">
-        $$\frac{7}{8} - \frac{3}{8} = \frac{7-3}{8} = \frac{4}{8} = \frac{1}{2}$$
-      </p>
+            <!-- PASO 1: Encontrar MCM -->
+            <div id="step1" class="step-card bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">PASO 1</div>
+                <h2 class="text-xl font-bold text-blue-800 mb-4">¡Busquemos el Denominador Común! 🕵️‍♂️</h2>
+                <p class="text-gray-700 mb-4 font-semibold">¿Cuál es el Mínimo Común Múltiplo (MCM) de <span id="hint-d1" class="text-indigo-600 text-xl"></span> y <span id="hint-d2" class="text-purple-600 text-xl"></span>?</p>
+                <div class="flex flex-col items-center gap-4">
+                    <input type="number" id="input-mcm" class="frac-input w-24 h-16 text-2xl placeholder-gray-300" placeholder="MCM">
+                    <button id="btn-mcm" class="btn-check w-full sm:w-auto">Comprobar</button>
+                    <p id="error-mcm" class="hint-text">¡Pista! Revisa las tablas de multiplicar de ambos números.</p>
+                </div>
+            </div>
+
+            <!-- PASO 2: Fracciones Equivalentes -->
+            <div id="step2" class="step-card step-hidden bg-purple-50 border-2 border-purple-200 rounded-2xl p-6 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">PASO 2</div>
+                <h2 class="text-xl font-bold text-purple-800 mb-4">¡Transforma las fracciones! ✨</h2>
+                <p class="text-gray-700 mb-4 font-semibold text-sm sm:text-base">Convierte ambas para que tengan denominador <span class="text-purple-600 text-xl mcm-display">X</span>.</p>
+                
+                <div class="flex justify-center items-center flex-wrap gap-4 sm:gap-6 mb-4">
+                    <div class="frac text-indigo-700">
+                        <input type="number" id="input-eq-n1" class="frac-input">
+                        <div class="frac-den text-indigo-900 mcm-display text-2xl">X</div>
+                    </div>
+                    <span class="text-pink-500 text-3xl font-bold">+</span>
+                    <div class="frac text-purple-700">
+                        <input type="number" id="input-eq-n2" class="frac-input">
+                        <div class="frac-den text-purple-900 mcm-display text-2xl">X</div>
+                    </div>
+                </div>
+                
+                <button id="btn-eq" class="btn-check w-full sm:w-auto">Comprobar</button>
+                <p id="error-eq" class="hint-text"></p>
+            </div>
+
+            <!-- PASO 3: Sumar -->
+            <div id="step3" class="step-card step-hidden bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-6 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">PASO 3</div>
+                <h2 class="text-xl font-bold text-emerald-800 mb-4">¡Suma los numeradores! ➕</h2>
+                <p class="text-gray-700 mb-4 font-semibold text-sm sm:text-base">Mismo denominador... ¡solo suma la parte de arriba!</p>
+                
+                <div class="flex justify-center items-center gap-4 mb-4">
+                    <div class="text-2xl font-bold text-gray-700 whitespace-nowrap">
+                        <span id="sum-display-n1" class="text-indigo-600"></span> + <span id="sum-display-n2" class="text-purple-600"></span>
+                    </div>
+                    <span class="text-emerald-500 text-3xl font-bold">=</span>
+                    <div class="frac">
+                        <input type="number" id="input-sum-n" class="frac-input border-emerald-300">
+                        <div class="frac-den text-emerald-900 mcm-display text-2xl">X</div>
+                    </div>
+                </div>
+
+                <button id="btn-sum" class="btn-check bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 w-full sm:w-auto">¡Sumar!</button>
+                <p id="error-sum" class="hint-text">Revisa bien tu suma.</p>
+            </div>
+
+            <!-- PASO 4: Simplificar -->
+            <div id="step4" class="step-card step-hidden bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">PASO FINAL</div>
+                <h2 class="text-xl font-bold text-amber-800 mb-4">¡Simplifica al máximo! ✂️</h2>
+                <p class="text-gray-700 mb-4 font-semibold text-sm sm:text-base" id="simp-desc">Divide arriba y abajo entre el mismo número.</p>
+                
+                <div class="flex justify-center items-center gap-4 mb-4">
+                    <div class="frac text-gray-400 opacity-70">
+                        <div class="frac-num" id="simp-display-n"></div>
+                        <div class="frac-den mcm-display">X</div>
+                    </div>
+                    <span class="text-amber-500 text-3xl font-bold">→</span>
+                    <div class="frac">
+                        <input type="number" id="input-simp-n" class="frac-input border-amber-400">
+                        <input type="number" id="input-simp-d" class="frac-input border-amber-400 mt-2">
+                    </div>
+                </div>
+
+                <button id="btn-simp" class="btn-check bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 w-full sm:w-auto">Simplificar</button>
+                <p id="error-simp" class="hint-text"></p>
+            </div>
+
+            <!-- ÉXITO -->
+            <div id="success-screen" class="step-card step-hidden text-center py-6">
+                <div class="text-6xl mb-4 animate-bounce">🏆</div>
+                <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500 mb-2">¡Misión Cumplida!</h2>
+                <p class="text-gray-600 font-bold mb-6">Eres un maestro de las fracciones.</p>
+                <button onclick="initGame()" class="btn-check text-xl px-8 py-4">Siguiente Reto 🔥</button>
+            </div>
+
+        </div>
     </div>
-  </div>
 
-  <script>
-    // ===== Auxiliares matemáticos =====
-    function gcd(a, b) {
-      a = Math.abs(a); b = Math.abs(b);
-      while (b !== 0) {
-        [a, b] = [b, a % b];
-      }
-      return a;
-    }
+    <script>
+        // --- UTILIDADES MATEMÁTICAS ---
+        function gcd(a, b) {
+            a = Math.abs(a); b = Math.abs(b);
+            while (b !== 0) { [a, b] = [b, a % b]; }
+            return a;
+        }
+        function lcm(a, b) { return Math.abs(a * b) / gcd(a, b); }
 
-    function lcm(a, b) {
-      return Math.abs(a * b) / gcd(a, b);
-    }
+        // --- ESTADO DEL JUEGO ---
+        let prob = {};
 
-    function simplify(num, den) {
-      if (den === 0) {
-        return { num: 0, den: 1 };
-      }
-      const d = gcd(num, den);
-      return { num: num / d, den: den / d };
-    }
+        // --- REFERENCIAS DOM ---
+        const ui = {
+            mainN1: document.getElementById('main-n1'),
+            mainD1: document.getElementById('main-d1'),
+            mainN2: document.getElementById('main-n2'),
+            mainD2: document.getElementById('main-d2'),
+            
+            hintD1: document.getElementById('hint-d1'),
+            hintD2: document.getElementById('hint-d2'),
+            mcmDisplays: document.querySelectorAll('.mcm-display'),
 
-    // ===== Generador de problemas =====
-    function generateProblem(op, diff = 1) {
-      const maxNum = diff === 1 ? 8 : diff === 2 ? 12 : 20;
-      const maxDen = diff === 1 ? 8 : diff === 2 ? 12 : 20;
-      let n1, d1, n2, d2;
-      do {
-        n1 = Math.floor(Math.random() * (maxNum - 1)) + 1;
-        d1 = Math.floor(Math.random() * (maxDen - 1)) + 2;
-      } while (gcd(n1, d1) !== 1);
-      do {
-        n2 = Math.floor(Math.random() * (maxNum - 1)) + 1;
-        d2 = Math.floor(Math.random() * (maxDen - 1)) + 2;
-      } while (
-        gcd(n2, d2) !== 1 ||
-        (op === 'resta' && n1 * d2 <= n2 * d1)
-      );
-      return { n1, d1, n2, d2 };
-    }
+            sumDisplayN1: document.getElementById('sum-display-n1'),
+            sumDisplayN2: document.getElementById('sum-display-n2'),
+            simpDisplayN: document.getElementById('simp-display-n'),
+            simpDesc: document.getElementById('simp-desc'),
 
-    // ===== Pistas para práctica =====
-    const hints = {
-      suma: [
-        "Empieza igualando los denominadores.",
-        "Suma solamente los numeradores.",
-        "No olvides simplificar al final."
-      ],
-      resta: [
-        "Asegúrate de igualar denominadores primero.",
-        "Resta los numeradores manteniendo el mismo denominador.",
-        "Verifica que la primera fracción sea mayor antes de restar."
-      ],
-      multiplicacion: [
-        "Multiplica numeradores entre sí y denominadores entre sí.",
-        "Piensa si puedes simplificar antes de multiplicar.",
-        "Revisa la fracción resultante."
-      ],
-      division: [
-        "Invierte la segunda fracción y convierte en multiplicación.",
-        "Multiplica numerador de la primera por denominador de la segunda.",
-        "Simplifica el resultado."
-      ]
-    };
+            inputs: {
+                mcm: document.getElementById('input-mcm'),
+                eqN1: document.getElementById('input-eq-n1'),
+                eqN2: document.getElementById('input-eq-n2'),
+                sumN: document.getElementById('input-sum-n'),
+                simpN: document.getElementById('input-simp-n'),
+                simpD: document.getElementById('input-simp-d'),
+            },
+            btns: {
+                mcm: document.getElementById('btn-mcm'),
+                eq: document.getElementById('btn-eq'),
+                sum: document.getElementById('btn-sum'),
+                simp: document.getElementById('btn-simp'),
+            },
+            errors: {
+                mcm: document.getElementById('error-mcm'),
+                eq: document.getElementById('error-eq'),
+                sum: document.getElementById('error-sum'),
+                simp: document.getElementById('error-simp'),
+            },
+            steps: {
+                s1: document.getElementById('step1'),
+                s2: document.getElementById('step2'),
+                s3: document.getElementById('step3'),
+                s4: document.getElementById('step4'),
+                success: document.getElementById('success-screen')
+            },
+            dots: [
+                document.getElementById('dot1'),
+                document.getElementById('dot2'),
+                document.getElementById('dot3'),
+                document.getElementById('dot4'),
+            ]
+        };
 
-    // ===== Lógica sección 'Aprender' =====
-    let learnOp = 'suma';
-    let learnProb = {};
+        // --- LÓGICA PRINCIPAL ---
+        function generateProblem() {
+            let d1, d2, n1, n2;
+            // Forzar denominadores diferentes para que siempre tengan que buscar MCM
+            do {
+                d1 = Math.floor(Math.random() * 8) + 2; // 2 al 9
+                d2 = Math.floor(Math.random() * 8) + 2;
+            } while (d1 === d2);
 
-    function makeLearnSteps(p) {
-      const { n1, d1, n2, d2 } = p;
-      let expr = '';
-      if (learnOp === 'suma' || learnOp === 'resta') {
-        const common = lcm(d1, d2);
-        const m1 = common / d1, m2 = common / d2;
-        const v1 = n1 * m1, v2 = n2 * m2;
-        const sym = learnOp === 'suma' ? '+' : '−';
-        const total = learnOp === 'suma' ? v1 + v2 : v1 - v2;
-        const r = simplify(total, common);
-        expr += `$$\\frac{${n1}}{${d1}} ${sym} \\frac{${n2}}{${d2}} = `;
-        expr += `\\frac{${n1}\\times${m1}}{${d1}\\times${m1}} ${sym} `;
-        expr += `\\frac{${n2}\\times${m2}}{${d2}\\times${m2}} = `;
-        expr += `\\frac{${v1}}{${common}} ${sym} \\frac{${v2}}{${common}} = `;
-        expr += `\\frac{${total}}{${common}} = \\frac{${r.num}}{${r.den}}$$`;
-      } else if (learnOp === 'multiplicacion') {
-        const num = p.n1 * p.n2, den = p.d1 * p.d2;
-        const r = simplify(num, den);
-        expr = `$$\\frac{${p.n1}}{${p.d1}} \\times \\frac{${p.n2}}{${p.d2}} = \\frac{${num}}{${den}} = \\frac{${r.num}}{${r.den}}$$`;
-      } else {
-        const num = p.n1 * p.d2, den = p.d1 * p.n2;
-        const r = simplify(num, den);
-        expr = `$$\\frac{${p.n1}}{${p.d1}} \\div \\frac{${p.n2}}{${p.d2}} = \\frac{${num}}{${den}} = \\frac{${r.num}}{${r.den}}$$`;
-      }
-      return expr;
-    }
+            n1 = Math.floor(Math.random() * (d1 - 1)) + 1; // Fracción propia
+            n2 = Math.floor(Math.random() * (d2 - 1)) + 1;
 
-    function displayLearn() {
-      document.getElementById('num1').innerText = learnProb.n1;
-      document.getElementById('den1').innerText = learnProb.d1;
-      document.getElementById('num2').innerText = learnProb.n2;
-      document.getElementById('den2').innerText = learnProb.d2;
-      document.getElementById('learn-op').innerText =
-        learnOp === 'suma' ? '+' :
-        learnOp === 'resta' ? '−' :
-        learnOp === 'multiplicacion' ? '×' : '÷';
-      const steps = makeLearnSteps(learnProb);
-      document.getElementById('steps').innerHTML = steps;
-      MathJax.typeset();
-    }
+            let cLcm = lcm(d1, d2);
+            let m1 = cLcm / d1;
+            let m2 = cLcm / d2;
+            let newN1 = n1 * m1;
+            let newN2 = n2 * m2;
+            let sumN = newN1 + newN2;
+            let cGcd = gcd(sumN, cLcm);
 
-    // ===== Lógica sección 'Practicar' =====
-    let practiceOp = 'suma';
-    let practiceProb = {};
-    const difficulty = 1;
+            return { n1, d1, n2, d2, lcm: cLcm, m1, m2, newN1, newN2, sumN, gcd: cGcd, finalN: sumN / cGcd, finalD: cLcm / cGcd };
+        }
 
-    function displayPractice() {
-      document.getElementById('practice-num1').innerText = practiceProb.n1;
-      document.getElementById('practice-den1').innerText = practiceProb.d1;
-      document.getElementById('practice-num2').innerText = practiceProb.n2;
-      document.getElementById('practice-den2').innerText = practiceProb.d2;
-      document.getElementById('practice-op').innerText =
-        practiceOp === 'suma' ? '+' :
-        practiceOp === 'resta' ? '−' :
-        practiceOp === 'multiplicacion' ? '×' : '÷';
-      document.getElementById('practice-numResult').value = '';
-      document.getElementById('practice-denResult').value = '';
-      document.getElementById('practice-feedback').innerHTML = '';
-    }
+        function initGame() {
+            prob = generateProblem();
 
-    function checkPractice() {
-      const inNum = parseInt(document.getElementById('practice-numResult').value, 10);
-      const inDen = parseInt(document.getElementById('practice-denResult').value, 10);
-      const fb = document.getElementById('practice-feedback');
-      if (isNaN(inNum) || isNaN(inDen)) {
-        fb.innerHTML = '<p>🤔 Completa ambos campos.</p>';
-        fb.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
-        return;
-      }
-      let correct;
-      const { n1, d1, n2, d2 } = practiceProb;
-      if (practiceOp === 'suma' || practiceOp === 'resta') {
-        const common = lcm(d1, d2);
-        const val = practiceOp === 'suma'
-          ? n1 * (common / d1) + n2 * (common / d2)
-          : n1 * (common / d1) - n2 * (common / d2);
-        correct = simplify(val, common);
-      } else if (practiceOp === 'multiplicacion') {
-        correct = simplify(n1 * n2, d1 * d2);
-      } else {
-        correct = simplify(n1 * d2, d1 * n2);
-      }
-      if (inNum === correct.num && inDen === correct.den) {
-        fb.innerHTML = '<p>🎉 ¡Exacto!</p>';
-        fb.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success');
-      } else {
-        const list = hints[practiceOp];
-        const hint = list[Math.floor(Math.random() * list.length)];
-        fb.innerHTML = `<p>❗ Pista: ${hint}</p>`;
-        fb.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
-      }
-    }
+            // Llenar interfaz principal
+            ui.mainN1.textContent = prob.n1; ui.mainD1.textContent = prob.d1;
+            ui.mainN2.textContent = prob.n2; ui.mainD2.textContent = prob.d2;
+            ui.hintD1.textContent = prob.d1; ui.hintD2.textContent = prob.d2;
 
-    // ===== Manejo de secciones y eventos =====
-    function switchSection(id) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
-      document.querySelector(`.nav-link[data-content="${id}"]`).classList.add('active');
-    }
+            // Resetear UI
+            Object.values(ui.inputs).forEach(input => {
+                input.value = '';
+                input.classList.remove('error', 'success');
+                input.disabled = false;
+            });
+            Object.values(ui.errors).forEach(err => err.style.display = 'none');
+            
+            // Ocultar/Mostrar pasos
+            ui.steps.s1.classList.remove('step-hidden');
+            ui.steps.s2.classList.add('step-hidden');
+            ui.steps.s3.classList.add('step-hidden');
+            ui.steps.s4.classList.add('step-hidden');
+            ui.steps.success.classList.add('step-hidden');
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // Navegación
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', e => {
-          e.preventDefault();
-          switchSection(e.target.dataset.content);
-        });
-      });
+            ui.btns.mcm.style.display = 'inline-block';
+            ui.btns.eq.style.display = 'inline-block';
+            ui.btns.sum.style.display = 'inline-block';
+            ui.btns.simp.style.display = 'inline-block';
 
-      // Pestañas Aprender
-      document.querySelectorAll('#learn-tabs .tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          document.querySelectorAll('#learn-tabs .tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          learnOp = tab.dataset.operation;
-          learnProb = generateProblem(learnOp, difficulty);
-          displayLearn();
-        });
-      });
+            updateDots(1);
+            ui.inputs.mcm.focus();
+        }
 
-      // Pestañas Practicar
-      document.querySelectorAll('#practice-tabs .tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          document.querySelectorAll('#practice-tabs .tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          practiceOp = tab.dataset.practice;
-          practiceProb = generateProblem(practiceOp, difficulty);
-          displayPractice();
-        });
-      });
+        function updateDots(step) {
+            ui.dots.forEach((dot, index) => {
+                if(index < step) {
+                    dot.classList.remove('bg-gray-300');
+                    dot.classList.add('bg-indigo-500', 'shadow-inner');
+                } else {
+                    dot.classList.add('bg-gray-300');
+                    dot.classList.remove('bg-indigo-500', 'shadow-inner');
+                }
+            });
+        }
 
-      // Botones
-      document.getElementById('new-example-learn').addEventListener('click', () => {
-        learnProb = generateProblem(learnOp, difficulty);
-        displayLearn();
-      });
-      document.getElementById('new-example-practice').addEventListener('click', () => {
-        practiceProb = generateProblem(practiceOp, difficulty);
-        displayPractice();
-      });
-      document.getElementById('check-answer').addEventListener('click', checkPractice);
+        function showError(inputEl, errorEl, msg) {
+            inputEl.classList.remove('error');
+            void inputEl.offsetWidth; // Trigger reflow para reiniciar animación
+            inputEl.classList.add('error');
+            errorEl.innerHTML = msg;
+            errorEl.style.display = 'block';
+            inputEl.focus();
+        }
 
-      // Modal ayuda
-      document.getElementById('show-help').addEventListener('click', () => {
-        document.getElementById('help-modal').classList.add('open');
-      });
-      document.getElementById('close-help').addEventListener('click', () => {
-        document.getElementById('help-modal').classList.remove('open');
-      });
+        function setSuccess(inputEl) {
+            inputEl.classList.remove('error');
+            inputEl.classList.add('success');
+            inputEl.disabled = true;
+        }
 
-      // Inicializar problemas
-      learnProb = generateProblem(learnOp, difficulty);
-      displayLearn();
-      practiceProb = generateProblem(practiceOp, difficulty);
-      displayPractice();
-    });
-  </script>
+        function launchConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#6366f1', '#a855f7', '#ec4899', '#22c55e']
+            });
+        }
+
+        // --- MANEJADORES DE PASOS ---
+
+        // PASO 1: MCM
+        function checkMCM() {
+            let val = parseInt(ui.inputs.mcm.value);
+            if (val === prob.lcm) {
+                setSuccess(ui.inputs.mcm);
+                ui.errors.mcm.style.display = 'none';
+                ui.btns.mcm.style.display = 'none';
+                
+                // Preparar paso 2
+                ui.mcmDisplays.forEach(el => el.textContent = prob.lcm);
+                ui.steps.s2.classList.remove('step-hidden');
+                updateDots(2);
+                setTimeout(() => ui.inputs.eqN1.focus(), 300);
+            } else {
+                // Pista didáctica
+                let mult1 = [prob.d1, prob.d1*2, prob.d1*3].join(', ');
+                let mult2 = [prob.d2, prob.d2*2, prob.d2*3].join(', ');
+                showError(ui.inputs.mcm, ui.errors.mcm, `¡Pista! Múltiplos de ${prob.d1} (${mult1}...) y de ${prob.d2} (${mult2}...). ¿Cuál coincide primero?`);
+            }
+        }
+
+        // PASO 2: Equivalentes
+        function checkEQ() {
+            let v1 = parseInt(ui.inputs.eqN1.value);
+            let v2 = parseInt(ui.inputs.eqN2.value);
+            let isOk = true;
+
+            if (v1 !== prob.newN1) {
+                showError(ui.inputs.eqN1, ui.errors.eq, `¡Ojo a la primera! Si multiplicaste abajo ${prob.d1} × ${prob.m1} = ${prob.lcm}, debes hacer arriba ${prob.n1} × ${prob.m1}.`);
+                isOk = false;
+            } else if (v2 !== prob.newN2) {
+                setSuccess(ui.inputs.eqN1);
+                showError(ui.inputs.eqN2, ui.errors.eq, `Primera correcta 👍. En la segunda: multiplica arriba ${prob.n2} × ${prob.m2}.`);
+                isOk = false;
+            }
+
+            if (isOk) {
+                setSuccess(ui.inputs.eqN1);
+                setSuccess(ui.inputs.eqN2);
+                ui.errors.eq.style.display = 'none';
+                ui.btns.eq.style.display = 'none';
+
+                // Preparar paso 3
+                ui.sumDisplayN1.textContent = prob.newN1;
+                ui.sumDisplayN2.textContent = prob.newN2;
+                ui.steps.s3.classList.remove('step-hidden');
+                updateDots(3);
+                setTimeout(() => ui.inputs.sumN.focus(), 300);
+            }
+        }
+
+        // PASO 3: Suma
+        function checkSum() {
+            let val = parseInt(ui.inputs.sumN.value);
+            if (val === prob.sumN) {
+                setSuccess(ui.inputs.sumN);
+                ui.errors.sum.style.display = 'none';
+                ui.btns.sum.style.display = 'none';
+
+                // Verificar si necesita simplificar
+                if (prob.gcd === 1) {
+                    // Si ya es irreducible, saltar paso 4 y ganar
+                    updateDots(4);
+                    ui.steps.success.classList.remove('step-hidden');
+                    launchConfetti();
+                } else {
+                    // Preparar paso 4
+                    ui.simpDisplayN.textContent = prob.sumN;
+                    ui.simpDesc.innerHTML = `Pista: Ambos números se pueden dividir exactamente entre <b class="text-amber-600 text-lg">${prob.gcd}</b>.`;
+                    ui.steps.s4.classList.remove('step-hidden');
+                    updateDots(4);
+                    setTimeout(() => ui.inputs.simpN.focus(), 300);
+                }
+            } else {
+                showError(ui.inputs.sumN, ui.errors.sum, `Solo suma: ${prob.newN1} + ${prob.newN2}. ¡Tú puedes!`);
+            }
+        }
+
+        // PASO 4: Simplificar
+        function checkSimp() {
+            let vN = parseInt(ui.inputs.simpN.value);
+            let vD = parseInt(ui.inputs.simpD.value);
+            let isOk = true;
+
+            if (vN !== prob.finalN || vD !== prob.finalD) {
+                if (vN !== prob.finalN) {
+                    showError(ui.inputs.simpN, ui.errors.simp, `El numerador está mal. Divide ${prob.sumN} ÷ ${prob.gcd}`);
+                } else {
+                    setSuccess(ui.inputs.simpN);
+                    showError(ui.inputs.simpD, ui.errors.simp, `El denominador está mal. Divide ${prob.lcm} ÷ ${prob.gcd}`);
+                }
+                isOk = false;
+            }
+
+            if (isOk) {
+                setSuccess(ui.inputs.simpN);
+                setSuccess(ui.inputs.simpD);
+                ui.errors.simp.style.display = 'none';
+                ui.btns.simp.style.display = 'none';
+                
+                ui.steps.success.classList.remove('step-hidden');
+                launchConfetti();
+            }
+        }
+
+        // --- EVENTOS ---
+        ui.btns.mcm.addEventListener('click', checkMCM);
+        ui.btns.eq.addEventListener('click', checkEQ);
+        ui.btns.sum.addEventListener('click', checkSum);
+        ui.btns.simp.addEventListener('click', checkSimp);
+
+        // Permitir usar "Enter" en los inputs
+        ui.inputs.mcm.addEventListener('keypress', e => { if (e.key === 'Enter') checkMCM(); });
+        ui.inputs.eqN1.addEventListener('keypress', e => { if (e.key === 'Enter') ui.inputs.eqN2.focus(); });
+        ui.inputs.eqN2.addEventListener('keypress', e => { if (e.key === 'Enter') checkEQ(); });
+        ui.inputs.sumN.addEventListener('keypress', e => { if (e.key === 'Enter') checkSum(); });
+        ui.inputs.simpN.addEventListener('keypress', e => { if (e.key === 'Enter') ui.inputs.simpD.focus(); });
+        ui.inputs.simpD.addEventListener('keypress', e => { if (e.key === 'Enter') checkSimp(); });
+
+        // Iniciar el primer juego
+        window.onload = initGame;
+    </script>
 </body>
 </html>
