@@ -895,8 +895,16 @@
             ui.simpFinalDisplay.classList.add('hidden');
             ui.frac3Display.classList.remove('hidden');
 
+            document.getElementById('display-eq-n1').textContent = '?';
+            document.getElementById('display-eq-d1').textContent = '?';
+            document.getElementById('display-eq-n2').textContent = '?';
+            document.getElementById('display-eq-d2').textContent = '?';
+
             ui.displaySumN.textContent = '?';
             ui.displaySumD.textContent = '?';
+
+            document.getElementById('display-final-n').textContent = '?';
+            document.getElementById('display-final-d').textContent = '?';
 
             // Pistas
             ui.hintD1.textContent = prob.d1;
