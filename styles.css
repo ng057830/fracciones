@@ -1,0 +1,196 @@
+/* Estilos de Pizzería Matemática */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap');
+
+:root {
+    --font-title: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    
+    /* Colores HSL Premium */
+    --bg-primary: #fdf8f5;
+    --bg-gradient-start: #fffbeb;
+    --bg-gradient-end: #ffedd5;
+    --bg-card: rgba(255, 255, 255, 0.88);
+    --border-amber: rgba(251, 191, 36, 0.35);
+    
+    --text-dark: #1e293b;
+    --text-muted: #475569;
+    
+    /* Colores Temáticos */
+    --pepperoni-red: #e11d48;
+    --pepperoni-bg: #fee2e2;
+    --veggie-green: #059669;
+    --veggie-bg: #ecfdf5;
+    --combined-gold: #d97706;
+    --combined-bg: #fef3c7;
+    
+    --success-green: #10b981;
+    --error-red: #f43f5e;
+    
+    --shadow-premium: 0 20px 25px -5px rgba(217, 119, 6, 0.08), 0 10px 10px -5px rgba(217, 119, 6, 0.04);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+body {
+    font-family: var(--font-body);
+    background: radial-gradient(circle, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-attachment: fixed;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-title);
+}
+
+/* Efecto Glassmorphism */
+.glass {
+    background: var(--bg-card);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: var(--shadow-premium);
+}
+
+/* Mesa de Cocina (Fondo con cuadrícula) */
+.kitchen-table {
+    background-color: #fdf8f4;
+    background-image: radial-gradient(#fdba74 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+}
+
+/* Formato Matemático de Fracciones */
+.frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    margin: 0 0.15rem;
+    font-weight: 800;
+}
+.frac-num {
+    padding: 0.05em 0.2em;
+    border-bottom: 3px solid var(--text-dark);
+    width: 100%;
+    text-align: center;
+}
+.frac-den {
+    padding: 0.05em 0.2em;
+    width: 100%;
+    text-align: center;
+}
+
+/* Inputs de Fracciones */
+.frac-input {
+    width: 3.2rem;
+    height: 3rem;
+    text-align: center;
+    border: 2.5px solid #cbd5e1;
+    border-radius: 0.75rem;
+    background: white;
+    font-family: var(--font-title);
+    font-weight: 800;
+    color: var(--combined-gold);
+    font-size: 1.4rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -moz-appearance: textfield;
+}
+.frac-input::-webkit-outer-spin-button,
+.frac-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.frac-input:focus {
+    outline: none;
+    border-color: var(--combined-gold);
+    box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2);
+    transform: scale(1.05);
+}
+.frac-input.error {
+    border-color: var(--error-red);
+    color: var(--error-red);
+    animation: shake 0.4s ease;
+}
+.frac-input.success {
+    border-color: var(--success-green);
+    color: var(--success-green);
+    background-color: #ecfdf5;
+    pointer-events: none;
+}
+
+/* Animación de error */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+/* Botones con estilo Chef */
+.btn-check {
+    background: linear-gradient(135deg, #f59e0b, #ea580c);
+    color: white;
+    font-family: var(--font-title);
+    font-weight: 800;
+    padding: 0.7rem 1.6rem;
+    border-radius: 0.85rem;
+    box-shadow: 0 4px 10px rgba(234, 88, 12, 0.25);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-check:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(234, 88, 12, 0.4);
+}
+.btn-check:active:not(:disabled) {
+    transform: translateY(1px);
+}
+.btn-check:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Sistema de Deslizamiento Compacto para los Pasos (Transiciones) */
+.step-card {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    transform: translateY(0);
+}
+.step-hidden {
+    opacity: 0;
+    transform: translateY(15px);
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+/* Estilo de la pizza SVG */
+.pizza-svg-container svg {
+    filter: drop-shadow(0 6px 8px rgba(120, 53, 4, 0.07));
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.pizza-svg-container svg:hover {
+    transform: scale(1.04) rotate(3deg);
+}
+
+/* Scrollbars personalizados y discretos */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
