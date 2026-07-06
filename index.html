@@ -3,57 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Misión Fracciones: Suma y Simplifica</title>
-    <!-- Tailwind CSS para un diseño espectacular rápido -->
+    <title>Pizzería Matemática: Misión Fracciones</title>
+    <!-- Tailwind CSS para diseño moderno -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fuente amigable y divertida -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- Librería para lanzar confeti al ganar -->
+    <!-- Fuente premium y divertida -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #f0fdf4;
-            background-image: radial-gradient(#bbf7d0 2px, transparent 2px);
-            background-size: 30px 30px;
+            background: radial-gradient(circle, #fffbeb 0%, #ffedd5 100%);
+            background-attachment: fixed;
         }
 
-        /* Estilos personalizados para las fracciones */
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* Fracciones en formato matemático */
         .frac {
             display: inline-flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             vertical-align: middle;
-            margin: 0 0.25rem;
-            font-size: 1.75rem;
+            margin: 0 0.15rem;
+            font-size: 1.5rem;
             font-weight: 900;
             color: #1e293b;
         }
         .frac-num {
-            padding: 0.1em 0.3em;
-            border-bottom: 4px solid currentColor;
+            padding: 0.05em 0.25em;
+            border-bottom: 3.5px solid #475569;
             width: 100%;
             text-align: center;
         }
         .frac-den {
-            padding: 0.1em 0.3em;
+            padding: 0.05em 0.25em;
             width: 100%;
             text-align: center;
         }
 
-        /* Inputs de las fracciones */
+        /* Inputs de Fracciones */
         .frac-input {
             width: 3.5rem;
             text-align: center;
             border: 3px solid #cbd5e1;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             background: white;
             font-weight: 900;
-            color: #4f46e5;
+            color: #d97706;
             font-size: 1.5rem;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             -moz-appearance: textfield;
         }
         .frac-input::-webkit-outer-spin-button,
@@ -63,9 +69,9 @@
         }
         .frac-input:focus {
             outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.3);
-            transform: scale(1.05);
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
+            transform: scale(1.08);
         }
         .frac-input.error {
             border-color: #ef4444;
@@ -79,32 +85,32 @@
             pointer-events: none;
         }
 
-        /* Botones molones */
-        .btn-check {
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            color: white;
-            font-weight: bold;
-            padding: 0.75rem 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-            transition: all 0.2s ease;
-        }
-        .btn-check:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
-        }
-        .btn-check:active {
-            transform: translateY(1px);
-        }
-
-        /* Animaciones */
+        /* Animación de vibración */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-8px); }
             50% { transform: translateX(8px); }
             75% { transform: translateX(-8px); }
         }
-        
+
+        /* Botones de acción */
+        .btn-check {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            font-weight: 800;
+            padding: 0.75rem 1.75rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-check:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.5);
+        }
+        .btn-check:active {
+            transform: translateY(1px);
+        }
+
         .step-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 1;
@@ -116,6 +122,11 @@
             pointer-events: none;
             position: absolute;
             visibility: hidden;
+            height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            border: none;
         }
 
         .hint-text {
@@ -130,132 +141,403 @@
             0% { opacity: 0; transform: scale(0.9); }
             100% { opacity: 1; transform: scale(1); }
         }
+
+        /* Estilo de la mesa de cocina */
+        .kitchen-table {
+            background-color: #fdf8f2;
+            background-image: radial-gradient(#fed7aa 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+        }
     </style>
 </head>
-<body class="min-h-screen py-8 px-4 flex flex-col items-center">
+<body class="min-h-screen py-6 px-4 flex flex-col items-center justify-center">
 
-    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl border-4 border-indigo-100 overflow-hidden relative">
+    <!-- Tarjeta Principal de la Pizzería -->
+    <div class="w-full max-w-5xl bg-white/95 rounded-3xl shadow-2xl border-4 border-amber-200 overflow-hidden relative">
         
-        <!-- Cabecera -->
-        <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 text-center text-white">
-            <h1 class="text-3xl sm:text-4xl font-black tracking-wide drop-shadow-md">🚀 Misión Fracciones</h1>
-            <p class="text-indigo-100 mt-2 font-bold text-lg">Paso a paso hacia el éxito</p>
-        </div>
-
-        <!-- Progreso -->
-        <div class="flex justify-center gap-3 p-4 bg-indigo-50 border-b-2 border-indigo-100">
-            <div id="dot1" class="w-4 h-4 rounded-full bg-indigo-500 shadow-inner"></div>
-            <div id="dot2" class="w-4 h-4 rounded-full bg-gray-300"></div>
-            <div id="dot3" class="w-4 h-4 rounded-full bg-gray-300"></div>
-            <div id="dot4" class="w-4 h-4 rounded-full bg-gray-300"></div>
-        </div>
-
-        <!-- Área de Trabajo -->
-        <div class="p-6 sm:p-10 space-y-8">
+        <!-- Cabecera Premium -->
+        <div class="bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 p-6 text-center text-white relative">
+            <div class="absolute left-4 top-4 flex gap-2">
+                <!-- Info botón -->
+                <button onclick="toggleHelpModal(true)" class="bg-white/20 hover:bg-white/30 text-white font-black w-8 h-8 rounded-full flex items-center justify-center transition-all">❓</button>
+            </div>
             
-            <!-- Problema Principal (Siempre visible) -->
-            <div class="flex justify-center items-center text-3xl sm:text-5xl font-bold bg-white border-4 border-dashed border-pink-300 rounded-3xl p-6 shadow-sm">
-                <div class="frac text-indigo-700">
-                    <div class="frac-num" id="main-n1">?</div>
-                    <div class="frac-den" id="main-d1">?</div>
+            <h1 class="text-3xl sm:text-4xl font-black tracking-wide drop-shadow-md">🍕 Pizzería Matemática</h1>
+            <p class="text-amber-100 mt-1 font-bold text-sm sm:text-base">¡Suma fracciones igualando el tamaño de las rebanadas!</p>
+
+            <!-- Marcador y Racha -->
+            <div class="mt-4 flex justify-center gap-6 text-xs sm:text-sm font-black">
+                <div class="bg-black/25 px-4 py-1.5 rounded-full flex items-center gap-1.5 border border-white/20">
+                    <span>🏆 Puntos:</span>
+                    <span id="score-display" class="text-amber-300 text-base">0</span>
                 </div>
-                <span class="text-pink-500 mx-2 sm:mx-4">+</span>
-                <div class="frac text-purple-700">
-                    <div class="frac-num" id="main-n2">?</div>
-                    <div class="frac-den" id="main-d2">?</div>
+                <div class="bg-black/25 px-4 py-1.5 rounded-full flex items-center gap-1.5 border border-white/20">
+                    <span>🔥 Racha:</span>
+                    <span id="streak-display" class="text-orange-300 text-base">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador de Progreso Visual (Pasos del Juego) -->
+        <div class="flex justify-around items-center p-3 bg-amber-50 border-b-2 border-amber-100 text-xs sm:text-sm font-bold text-amber-700">
+            <div id="step-tab-1" class="flex items-center gap-1 transition-all duration-300 opacity-100">
+                <span class="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs">1</span>
+                <span>MCM</span>
+            </div>
+            <div class="h-0.5 bg-amber-200 flex-grow mx-2"></div>
+            <div id="step-tab-2" class="flex items-center gap-1 transition-all duration-300 opacity-40">
+                <span class="w-6 h-6 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-xs">2</span>
+                <span>Equivalencia</span>
+            </div>
+            <div class="h-0.5 bg-amber-200 flex-grow mx-2"></div>
+            <div id="step-tab-3" class="flex items-center gap-1 transition-all duration-300 opacity-40">
+                <span class="w-6 h-6 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-xs">3</span>
+                <span>Suma</span>
+            </div>
+            <div class="h-0.5 bg-amber-200 flex-grow mx-2"></div>
+            <div id="step-tab-4" class="flex items-center gap-1 transition-all duration-300 opacity-40">
+                <span class="w-6 h-6 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-xs">4</span>
+                <span>Simplificar</span>
+            </div>
+        </div>
+
+        <!-- Layout de dos columnas para Escritorio -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+            
+            <!-- COLUMNA IZQUIERDA: Mesa de Preparación de Pizzas (Visualizador) -->
+            <div class="lg:col-span-7 p-6 sm:p-8 kitchen-table border-r-0 lg:border-r-4 lg:border-dashed lg:border-amber-200 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xl font-extrabold text-amber-800 mb-4 flex items-center gap-2">
+                        <span>🍳 Mesa de Preparación</span>
+                        <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">Interactiva</span>
+                    </h2>
+                    
+                    <p id="size-warning" class="text-sm text-red-600 font-bold bg-red-50 border border-red-100 rounded-xl p-3 mb-6 leading-relaxed flex items-start gap-2 shadow-sm">
+                        <span>⚠️</span>
+                        <span>¡Los denominadores son diferentes! Las rebanadas tienen tamaños distintos. Encuentra el denominador común (MCM) para cortarlas en porciones iguales antes de sumar.</span>
+                    </p>
+                    
+                    <p id="size-ok" class="text-sm text-green-700 font-bold bg-green-50 border border-green-100 rounded-xl p-3 mb-6 leading-relaxed hidden items-start gap-2 shadow-sm">
+                        <span>✅</span>
+                        <span>¡Excelente! Las rebanadas ahora tienen el mismo tamaño. ¡Estamos listos para combinar los numeradores!</span>
+                    </p>
+                </div>
+
+                <!-- Pizzas y Fracciones lado a lado -->
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-6 py-6">
+                    
+                    <!-- Pizza 1 Card (Pepperoni) -->
+                    <div class="flex flex-col items-center bg-white/70 p-4 rounded-2xl shadow-sm border border-amber-100 w-full max-w-[170px] transition-all hover:shadow-md">
+                        <span class="text-xs font-black text-red-600 mb-2 uppercase tracking-wider">Pepperoni 🍕</span>
+                        <div id="pizza1-container" class="flex justify-center items-center min-h-[130px]">
+                            <!-- SVG Pizza 1 -->
+                        </div>
+                        <div class="mt-3 flex items-center">
+                            <div class="frac text-red-600">
+                                <div class="frac-num" id="display-n1">?</div>
+                                <div class="frac-den" id="display-d1">?</div>
+                            </div>
+                            <div id="equiv-display-1" class="text-lg font-black text-gray-400 ml-1 hidden">
+                                <span>=</span>
+                                <div class="frac text-amber-600">
+                                    <div class="frac-num" id="display-eq-n1">?</div>
+                                    <div class="frac-den" id="display-eq-d1">?</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operador + -->
+                    <span class="text-orange-500 text-4xl font-black rotate-0 sm:rotate-0">+</span>
+
+                    <!-- Pizza 2 Card (Vegetariana) -->
+                    <div class="flex flex-col items-center bg-white/70 p-4 rounded-2xl shadow-sm border border-amber-100 w-full max-w-[170px] transition-all hover:shadow-md">
+                        <span class="text-xs font-black text-green-600 mb-2 uppercase tracking-wider">Vegetales 🥦</span>
+                        <div id="pizza2-container" class="flex justify-center items-center min-h-[130px]">
+                            <!-- SVG Pizza 2 -->
+                        </div>
+                        <div class="mt-3 flex items-center">
+                            <div class="frac text-green-600">
+                                <div class="frac-num" id="display-n2">?</div>
+                                <div class="frac-den" id="display-d2">?</div>
+                            </div>
+                            <div id="equiv-display-2" class="text-lg font-black text-gray-400 ml-1 hidden">
+                                <span>=</span>
+                                <div class="frac text-amber-600">
+                                    <div class="frac-num" id="display-eq-n2">?</div>
+                                    <div class="frac-den" id="display-eq-d2">?</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operador = -->
+                    <span class="text-orange-500 text-4xl font-black rotate-90 sm:rotate-0">=</span>
+
+                    <!-- Plato de Entrega (Combined / Resultado) -->
+                    <div class="flex flex-col items-center bg-white/70 p-4 rounded-2xl shadow-sm border border-amber-100 w-full max-w-[170px] transition-all hover:shadow-md">
+                        <span class="text-xs font-black text-amber-600 mb-2 uppercase tracking-wider">Entrega 🍽️</span>
+                        <div id="pizza3-container" class="flex justify-center items-center min-h-[130px]">
+                            <!-- SVG Pizza 3 -->
+                        </div>
+                        <div class="mt-3">
+                            <div class="frac text-amber-600" id="frac3-display">
+                                <div class="frac-num" id="display-sum-n">?</div>
+                                <div class="frac-den" id="display-sum-d">?</div>
+                            </div>
+                            <!-- Para mostrar la simplificación -->
+                            <div id="simp-final-display" class="text-lg font-black text-gray-400 inline-flex items-center hidden">
+                                <span class="mx-1">→</span>
+                                <div class="frac text-emerald-600">
+                                    <div class="frac-num" id="display-final-n">?</div>
+                                    <div class="frac-den" id="display-final-d">?</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- PASO 1: Encontrar MCM -->
-            <div id="step1" class="step-card bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">PASO 1</div>
-                <h2 class="text-xl font-bold text-blue-800 mb-4">¡Busquemos el Denominador Común! 🕵️‍♂️</h2>
-                <p class="text-gray-700 mb-4 font-semibold">¿Cuál es el Mínimo Común Múltiplo (MCM) de <span id="hint-d1" class="text-indigo-600 text-xl"></span> y <span id="hint-d2" class="text-purple-600 text-xl"></span>?</p>
-                <div class="flex flex-col items-center gap-4">
-                    <input type="number" id="input-mcm" class="frac-input w-24 h-16 text-2xl placeholder-gray-300" placeholder="MCM">
-                    <button id="btn-mcm" class="btn-check w-full sm:w-auto">Comprobar</button>
-                    <p id="error-mcm" class="hint-text">¡Pista! Revisa las tablas de multiplicar de ambos números.</p>
-                </div>
-            </div>
+            <!-- COLUMNA DERECHA: Consola de Misiones e Inputs -->
+            <div class="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-center bg-amber-50/50">
 
-            <!-- PASO 2: Fracciones Equivalentes -->
-            <div id="step2" class="step-card step-hidden bg-purple-50 border-2 border-purple-200 rounded-2xl p-6 text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">PASO 2</div>
-                <h2 class="text-xl font-bold text-purple-800 mb-4">¡Transforma las fracciones! ✨</h2>
-                <p class="text-gray-700 mb-4 font-semibold text-sm sm:text-base">Convierte ambas para que tengan denominador <span class="text-purple-600 text-xl mcm-display">X</span>.</p>
-                
-                <div class="flex justify-center items-center flex-wrap gap-4 sm:gap-6 mb-4">
-                    <div class="frac text-indigo-700">
-                        <input type="number" id="input-eq-n1" class="frac-input">
-                        <div class="frac-den text-indigo-900 mcm-display text-2xl">X</div>
-                    </div>
-                    <span class="text-pink-500 text-3xl font-bold">+</span>
-                    <div class="frac text-purple-700">
-                        <input type="number" id="input-eq-n2" class="frac-input">
-                        <div class="frac-den text-purple-900 mcm-display text-2xl">X</div>
-                    </div>
-                </div>
-                
-                <button id="btn-eq" class="btn-check w-full sm:w-auto">Comprobar</button>
-                <p id="error-eq" class="hint-text"></p>
-            </div>
-
-            <!-- PASO 3: Sumar -->
-            <div id="step3" class="step-card step-hidden bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-6 text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">PASO 3</div>
-                <h2 class="text-xl font-bold text-emerald-800 mb-4">¡Suma los numeradores! ➕</h2>
-                <p class="text-gray-700 mb-4 font-semibold text-sm sm:text-base">Mismo denominador... ¡solo suma la parte de arriba!</p>
-                
-                <div class="flex justify-center items-center gap-4 mb-4">
-                    <div class="text-2xl font-bold text-gray-700 whitespace-nowrap">
-                        <span id="sum-display-n1" class="text-indigo-600"></span> + <span id="sum-display-n2" class="text-purple-600"></span>
-                    </div>
-                    <span class="text-emerald-500 text-3xl font-bold">=</span>
-                    <div class="frac">
-                        <input type="number" id="input-sum-n" class="frac-input border-emerald-300">
-                        <div class="frac-den text-emerald-900 mcm-display text-2xl">X</div>
+                <!-- PASO 1: Encontrar MCM -->
+                <div id="step1" class="step-card bg-blue-50/90 border-2 border-blue-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
+                    <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-extrabold px-3 py-1 rounded-bl-lg">PASO 1</div>
+                    <h3 class="text-lg font-bold text-blue-800 mb-2 flex items-center gap-1.5">
+                        <span>🕵️‍♂️ Múltiplo Común Mínimo</span>
+                    </h3>
+                    <p class="text-gray-700 text-sm mb-4 font-semibold">
+                        Los denominadores actuales son <span id="hint-d1" class="text-red-600 font-extrabold text-lg"></span> y <span id="hint-d2" class="text-green-600 font-extrabold text-lg"></span>. ¿Cuál es su MCM?
+                    </p>
+                    
+                    <div class="flex flex-col gap-4">
+                        <div class="flex gap-3">
+                            <input type="number" id="input-mcm" class="frac-input w-full h-14 text-xl placeholder-gray-300" placeholder="MCM">
+                            <button id="btn-mcm" class="btn-check w-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-blue-200">Comprobar</button>
+                        </div>
+                        <p id="error-mcm" class="hint-text"></p>
                     </div>
                 </div>
 
-                <button id="btn-sum" class="btn-check bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 w-full sm:w-auto">¡Sumar!</button>
-                <p id="error-sum" class="hint-text">Revisa bien tu suma.</p>
-            </div>
+                <!-- PASO 2: Fracciones Equivalentes -->
+                <div id="step2" class="step-card step-hidden bg-purple-50/90 border-2 border-purple-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
+                    <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs font-extrabold px-3 py-1 rounded-bl-lg">PASO 2</div>
+                    <h3 class="text-lg font-bold text-purple-800 mb-2 flex items-center gap-1.5">
+                        <span>✨ Rebanar Porciones</span>
+                    </h3>
+                    <p class="text-gray-700 text-sm mb-4 font-semibold">
+                        ¡Corte perfecto! 🔪 Hemos dividido ambas pizzas en <span class="text-purple-600 font-extrabold text-lg mcm-display">X</span> porciones. Convierte los numeradores:
+                    </p>
+                    
+                    <div class="flex flex-col gap-4">
+                        <div class="flex justify-center items-center gap-6">
+                            <!-- Frac 1 Eq -->
+                            <div class="flex flex-col items-center bg-white p-3 rounded-xl border border-purple-100 shadow-sm">
+                                <span class="text-xs font-black text-red-500 mb-1">Pepperoni</span>
+                                <div class="frac text-red-600">
+                                    <input type="number" id="input-eq-n1" class="frac-input h-12 w-14">
+                                    <div class="frac-den text-gray-500 mcm-display">X</div>
+                                </div>
+                            </div>
+                            
+                            <span class="text-purple-400 text-2xl font-black">+</span>
+                            
+                            <!-- Frac 2 Eq -->
+                            <div class="flex flex-col items-center bg-white p-3 rounded-xl border border-purple-100 shadow-sm">
+                                <span class="text-xs font-black text-green-500 mb-1">Vegetales</span>
+                                <div class="frac text-green-600">
+                                    <input type="number" id="input-eq-n2" class="frac-input h-12 w-14">
+                                    <div class="frac-den text-gray-500 mcm-display">X</div>
+                                </div>
+                            </div>
+                        </div>
 
-            <!-- PASO 4: Simplificar -->
-            <div id="step4" class="step-card step-hidden bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">PASO FINAL</div>
-                <h2 class="text-xl font-bold text-amber-800 mb-4">¡Simplifica al máximo! ✂️</h2>
-                <p class="text-gray-700 mb-4 font-semibold text-sm sm:text-base" id="simp-desc">Divide arriba y abajo entre el mismo número.</p>
-                
-                <div class="flex justify-center items-center gap-4 mb-4">
-                    <div class="frac text-gray-400 opacity-70">
-                        <div class="frac-num" id="simp-display-n"></div>
-                        <div class="frac-den mcm-display">X</div>
-                    </div>
-                    <span class="text-amber-500 text-3xl font-bold">→</span>
-                    <div class="frac">
-                        <input type="number" id="input-simp-n" class="frac-input border-amber-400">
-                        <input type="number" id="input-simp-d" class="frac-input border-amber-400 mt-2">
+                        <button id="btn-eq" class="btn-check w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-purple-200">Rebanar y Comprobar</button>
+                        <p id="error-eq" class="hint-text"></p>
                     </div>
                 </div>
 
-                <button id="btn-simp" class="btn-check bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 w-full sm:w-auto">Simplificar</button>
-                <p id="error-simp" class="hint-text"></p>
+                <!-- PASO 3: Sumar -->
+                <div id="step3" class="step-card step-hidden bg-emerald-50/90 border-2 border-emerald-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
+                    <div class="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-extrabold px-3 py-1 rounded-bl-lg">PASO 3</div>
+                    <h3 class="text-lg font-bold text-emerald-800 mb-2 flex items-center gap-1.5">
+                        <span>➕ Juntar y Sumar</span>
+                    </h3>
+                    <p class="text-gray-700 text-sm mb-4 font-semibold">
+                        ¡Ahora que son del mismo tamaño, simplemente sumamos los numeradores!
+                    </p>
+                    
+                    <div class="flex flex-col gap-4">
+                        <div class="flex justify-center items-center gap-4 bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
+                            <div class="text-xl font-black text-gray-700">
+                                <span id="sum-display-n1" class="text-red-500"></span> + <span id="sum-display-n2" class="text-green-500"></span>
+                            </div>
+                            <span class="text-emerald-500 text-2xl font-black">=</span>
+                            <div class="frac">
+                                <input type="number" id="input-sum-n" class="frac-input border-emerald-300 h-12 w-16">
+                                <div class="frac-den text-gray-500 mcm-display">X</div>
+                            </div>
+                        </div>
+
+                        <button id="btn-sum" class="btn-check w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-emerald-200">Colocar en Plato</button>
+                        <p id="error-sum" class="hint-text"></p>
+                    </div>
+                </div>
+
+                <!-- PASO 4: Simplificar -->
+                <div id="step4" class="step-card step-hidden bg-amber-50/90 border-2 border-amber-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-extrabold px-3 py-1 rounded-bl-lg">PASO FINAL</div>
+                    <h3 class="text-lg font-bold text-amber-800 mb-2 flex items-center gap-1.5">
+                        <span>✂️ Fusionar y Simplificar</span>
+                    </h3>
+                    <p class="text-gray-700 text-sm mb-4 font-semibold" id="simp-desc">
+                        ¡Simplifica al máximo dividiendo arriba y abajo!
+                    </p>
+                    
+                    <div class="flex flex-col gap-4">
+                        <div class="flex justify-center items-center gap-4">
+                            <div class="frac text-gray-400 opacity-60 bg-white p-3 rounded-lg border border-amber-100">
+                                <div class="frac-num" id="simp-display-n"></div>
+                                <div class="frac-den mcm-display">X</div>
+                            </div>
+                            <span class="text-amber-500 text-2xl font-black">→</span>
+                            <div class="frac bg-white p-3 rounded-xl border-2 border-amber-300 shadow-sm">
+                                <input type="number" id="input-simp-n" class="frac-input border-amber-300 h-11 w-14" placeholder="Num">
+                                <input type="number" id="input-simp-d" class="frac-input border-amber-300 h-11 w-14 mt-1.5" placeholder="Den">
+                            </div>
+                        </div>
+
+                        <button id="btn-simp" class="btn-check w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-amber-200">Simplificar Pizza</button>
+                        <p id="error-simp" class="hint-text"></p>
+                    </div>
+                </div>
+
+                <!-- PANTALLA DE ÉXITO -->
+                <div id="success-screen" class="step-card step-hidden text-center py-6 flex flex-col items-center">
+                    <div class="text-6xl mb-4 animate-bounce">🏆</div>
+                    <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600 mb-2">¡Misión Cumplida!</h2>
+                    <p class="text-gray-600 font-bold mb-6">¡Has preparado y entregado la orden a la perfección!</p>
+                    <button onclick="initGame()" class="btn-check text-xl px-10 py-4 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-orange-300 flex items-center gap-2">
+                        <span>Siguiente Reto</span>
+                        <span>🔥</span>
+                    </button>
+                </div>
+
             </div>
 
-            <!-- ÉXITO -->
-            <div id="success-screen" class="step-card step-hidden text-center py-6">
-                <div class="text-6xl mb-4 animate-bounce">🏆</div>
-                <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500 mb-2">¡Misión Cumplida!</h2>
-                <p class="text-gray-600 font-bold mb-6">Eres un maestro de las fracciones.</p>
-                <button onclick="initGame()" class="btn-check text-xl px-8 py-4">Siguiente Reto 🔥</button>
-            </div>
+        </div>
 
+    </div>
+
+    <!-- Modal de Ayuda / Instrucciones -->
+    <div id="help-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 border-4 border-amber-300 shadow-2xl relative">
+            <button onclick="toggleHelpModal(false)" class="absolute top-4 right-4 text-2xl font-black text-gray-400 hover:text-gray-600 transition-all">✕</button>
+            <h3 class="text-2xl font-black text-amber-800 mb-4 flex items-center gap-2">
+                <span>🍕 ¿Cómo funciona?</span>
+            </h3>
+            <div class="space-y-4 text-gray-700 text-sm font-semibold leading-relaxed">
+                <p>
+                    Para sumar fracciones con denominadores distintos, no podemos simplemente sumar las partes porque <strong>las rebanadas son de tamaños diferentes</strong>.
+                </p>
+                <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100 flex items-center gap-3">
+                    <div class="text-3xl">🧩</div>
+                    <div>
+                        <strong>Paso 1 (MCM):</strong> Buscamos el Mínimo Común Múltiplo de los denominadores para saber en cuántas partes iguales cortar ambas pizzas.
+                    </div>
+                </div>
+                <div class="bg-purple-50 p-3 rounded-2xl border border-purple-100 flex items-center gap-3">
+                    <div class="text-3xl">🔪</div>
+                    <div>
+                        <strong>Paso 2 (Equivalencia):</strong> Cortamos cada porción original en porciones más pequeñas. Multiplicamos el numerador por el mismo factor del denominador.
+                    </div>
+                </div>
+                <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                    <div class="text-3xl">➕</div>
+                    <div>
+                        <strong>Paso 3 (Suma):</strong> Juntamos todas las rebanadas en el plato de entrega y sumamos los numeradores.
+                    </div>
+                </div>
+                <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100 flex items-center gap-3">
+                    <div class="text-3xl">✂️</div>
+                    <div>
+                        <strong>Paso 4 (Simplificación):</strong> Si las porciones pueden fusionarse en rebanadas más grandes sin cambiar la cantidad total, simplificamos dividiendo.
+                    </div>
+                </div>
+            </div>
+            <button onclick="toggleHelpModal(false)" class="btn-check w-full mt-6">¡Entendido, a cocinar!</button>
         </div>
     </div>
 
+    <!-- Lógica JavaScript del Juego -->
     <script>
-        // --- UTILIDADES MATEMÁTICAS ---
+        // --- CONFIGURACIÓN DE AUDIO SINTÉTICO (API WEB AUDIO) ---
+        let audioCtx;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            initAudio();
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            const now = audioCtx.currentTime;
+            
+            if (type === 'success') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(330, now); // E4
+                osc.frequency.setValueAtTime(440, now + 0.08); // A4
+                osc.frequency.setValueAtTime(554, now + 0.16); // C#5
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, now);
+                osc.frequency.linearRampToValueAtTime(110, now + 0.25);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'slice') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1300, now + 0.12);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'victory') {
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50]; // Acorde mayor
+                notes.forEach((freq, index) => {
+                    const noteOsc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+                    noteOsc.connect(noteGain);
+                    noteGain.connect(audioCtx.destination);
+                    noteOsc.type = 'triangle';
+                    noteOsc.frequency.setValueAtTime(freq, now + index * 0.07);
+                    noteGain.gain.setValueAtTime(0.12, now + index * 0.07);
+                    noteGain.gain.exponentialRampToValueAtTime(0.01, now + index * 0.07 + 0.35);
+                    noteOsc.start(now + index * 0.07);
+                    noteOsc.stop(now + index * 0.07 + 0.4);
+                });
+            }
+        }
+
+        // --- AUXILIARES MATEMÁTICOS ---
         function gcd(a, b) {
             a = Math.abs(a); b = Math.abs(b);
             while (b !== 0) { [a, b] = [b, a % b]; }
@@ -265,13 +547,35 @@
 
         // --- ESTADO DEL JUEGO ---
         let prob = {};
+        let score = parseInt(localStorage.getItem('pizza_fraction_score')) || 0;
+        let streak = parseInt(localStorage.getItem('pizza_fraction_streak')) || 0;
 
-        // --- REFERENCIAS DOM ---
+        // --- ELEMENTOS DOM ---
         const ui = {
-            mainN1: document.getElementById('main-n1'),
-            mainD1: document.getElementById('main-d1'),
-            mainN2: document.getElementById('main-n2'),
-            mainD2: document.getElementById('main-d2'),
+            displayN1: document.getElementById('display-n1'),
+            displayD1: document.getElementById('display-d1'),
+            displayN2: document.getElementById('display-n2'),
+            displayD2: document.getElementById('display-d2'),
+            
+            displayEqN1: document.getElementById('display-eq-n1'),
+            displayEqD1: document.getElementById('display-eq-d1'),
+            displayEqN2: document.getElementById('display-eq-n2'),
+            displayEqD2: document.getElementById('display-eq-d2'),
+            
+            displaySumN: document.getElementById('display-sum-n'),
+            displaySumD: document.getElementById('display-sum-d'),
+            
+            displayFinalN: document.getElementById('display-final-n'),
+            displayFinalD: document.getElementById('display-final-d'),
+            
+            pizza1Container: document.getElementById('pizza1-container'),
+            pizza2Container: document.getElementById('pizza2-container'),
+            pizza3Container: document.getElementById('pizza3-container'),
+            
+            equivDisplay1: document.getElementById('equiv-display-1'),
+            equivDisplay2: document.getElementById('equiv-display-2'),
+            simpFinalDisplay: document.getElementById('simp-final-display'),
+            frac3Display: document.getElementById('frac3-display'),
             
             hintD1: document.getElementById('hint-d1'),
             hintD2: document.getElementById('hint-d2'),
@@ -281,6 +585,9 @@
             sumDisplayN2: document.getElementById('sum-display-n2'),
             simpDisplayN: document.getElementById('simp-display-n'),
             simpDesc: document.getElementById('simp-desc'),
+
+            sizeWarning: document.getElementById('size-warning'),
+            sizeOk: document.getElementById('size-ok'),
 
             inputs: {
                 mcm: document.getElementById('input-mcm'),
@@ -309,21 +616,244 @@
                 s4: document.getElementById('step4'),
                 success: document.getElementById('success-screen')
             },
-            dots: [
-                document.getElementById('dot1'),
-                document.getElementById('dot2'),
-                document.getElementById('dot3'),
-                document.getElementById('dot4'),
-            ]
+            tabs: {
+                t1: document.getElementById('step-tab-1'),
+                t2: document.getElementById('step-tab-2'),
+                t3: document.getElementById('step-tab-3'),
+                t4: document.getElementById('step-tab-4'),
+            }
         };
 
-        // --- LÓGICA PRINCIPAL ---
+        // --- DIBUJADO DE PIZZAS CON SVG ---
+        function getSlicePath(cx, cy, r, startAngle, endAngle) {
+            if (Math.abs(endAngle - startAngle - 2 * Math.PI) < 0.001) {
+                return `M ${cx - r} ${cy} A ${r} ${r} 0 1 0 ${cx + r} ${cy} A ${r} ${r} 0 1 0 ${cx - r} ${cy}`;
+            }
+            const x1 = cx + r * Math.cos(startAngle);
+            const y1 = cy + r * Math.sin(startAngle);
+            const x2 = cx + r * Math.cos(endAngle);
+            const y2 = cy + r * Math.sin(endAngle);
+            const largeArcFlag = (endAngle - startAngle) > Math.PI ? 1 : 0;
+            return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
+        }
+
+        function renderPizza(container, num, den, subdiv, type) {
+            container.innerHTML = '';
+            
+            const totalSlices = den * subdiv;
+            const activeSlices = num * subdiv;
+            
+            // Si el numerador es 0, dibujamos una pizza vacía (solo plato y masa base)
+            const pizzasNeeded = Math.max(1, Math.ceil(activeSlices / totalSlices));
+            
+            const wrapper = document.createElement("div");
+            wrapper.className = "flex gap-2 flex-wrap justify-center";
+            
+            for (let p = 0; p < pizzasNeeded; p++) {
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute("viewBox", "0 0 160 160");
+                svg.setAttribute("class", "w-28 h-28 sm:w-32 sm:h-32 filter drop-shadow-md transition-all duration-300 hover:scale-105");
+                
+                // Plato
+                const plate = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                plate.setAttribute("cx", "80");
+                plate.setAttribute("cy", "80");
+                plate.setAttribute("r", "76");
+                plate.setAttribute("fill", "#fdfbf7");
+                plate.setAttribute("stroke", "#e2e8f0");
+                plate.setAttribute("stroke-width", "3");
+                svg.appendChild(plate);
+                
+                // Borde del plato de entrega decorado
+                const plateBorder = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                plateBorder.setAttribute("cx", "80");
+                plateBorder.setAttribute("cy", "80");
+                plateBorder.setAttribute("r", "73");
+                plateBorder.setAttribute("fill", "none");
+                plateBorder.setAttribute("stroke", "#cbd5e1");
+                plateBorder.setAttribute("stroke-dasharray", "4,6");
+                plateBorder.setAttribute("stroke-width", "1");
+                svg.appendChild(plateBorder);
+
+                // Base de la masa (crust) que se ve de fondo en las partes vacías
+                const crustBase = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                crustBase.setAttribute("cx", "80");
+                crustBase.setAttribute("cy", "80");
+                crustBase.setAttribute("r", "60");
+                crustBase.setAttribute("fill", "#f1f5f9"); // Queso/salsa base inactiva
+                crustBase.setAttribute("stroke", "#cbd5e1");
+                crustBase.setAttribute("stroke-width", "2");
+                svg.appendChild(crustBase);
+
+                // Rebanadas individuales
+                const startSliceIndex = p * totalSlices;
+                
+                for (let i = 0; i < totalSlices; i++) {
+                    const globalSliceIndex = startSliceIndex + i;
+                    const isActive = globalSliceIndex < activeSlices;
+                    
+                    const startAngle = (i * 2 * Math.PI) / totalSlices - Math.PI / 2;
+                    const endAngle = ((i + 1) * 2 * Math.PI) / totalSlices - Math.PI / 2;
+                    
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    const pathStr = getSlicePath(80, 80, 60, startAngle, endAngle);
+                    path.setAttribute("d", pathStr);
+                    
+                    if (isActive) {
+                        if (type === 'pepperoni') {
+                            path.setAttribute("fill", "#fee2e2"); // base de queso para pepperoni
+                            path.setAttribute("stroke", "#ef4444"); // salsa de tomate
+                            path.setAttribute("stroke-width", "1.5");
+                        } else if (type === 'veggie') {
+                            path.setAttribute("fill", "#ecfdf5"); // base de queso vegetariano
+                            path.setAttribute("stroke", "#22c55e"); // borde verde
+                            path.setAttribute("stroke-width", "1.5");
+                        } else { // combined
+                            path.setAttribute("fill", "#fef3c7"); // base mixta
+                            path.setAttribute("stroke", "#d97706");
+                            path.setAttribute("stroke-width", "1.5");
+                        }
+                    } else {
+                        path.setAttribute("fill", "#f8fafc"); // Vacío/plato
+                        path.setAttribute("stroke", "#e2e8f0");
+                        path.setAttribute("stroke-width", "1");
+                    }
+                    svg.appendChild(path);
+                    
+                    // Decoraciones/Toppings de la rebanada si está activa
+                    if (isActive) {
+                        const midAngle = (startAngle + endAngle) / 2;
+                        const isWideSlice = (endAngle - startAngle) > (Math.PI / 4.5);
+                        
+                        if (type === 'pepperoni') {
+                            // Rodajas de Pepperoni (rojas)
+                            if (isWideSlice) {
+                                // Dibujar 2 pepperonis
+                                const rx1 = 80 + 34 * Math.cos(midAngle - 0.12);
+                                const ry1 = 80 + 34 * Math.sin(midAngle - 0.12);
+                                svg.appendChild(createCircle(rx1, ry1, 6, "#dc2626", "#991b1b"));
+
+                                const rx2 = 80 + 44 * Math.cos(midAngle + 0.12);
+                                const ry2 = 80 + 44 * Math.sin(midAngle + 0.12);
+                                svg.appendChild(createCircle(rx2, ry2, 5, "#dc2626", "#991b1b"));
+                            } else {
+                                // 1 pepperoni
+                                const rx = 80 + 38 * Math.cos(midAngle);
+                                const ry = 80 + 38 * Math.sin(midAngle);
+                                svg.appendChild(createCircle(rx, ry, 5.5, "#dc2626", "#991b1b"));
+                            }
+                        } else if (type === 'veggie') {
+                            // Hojas de albahaca (verdes) u aceitunas (negras)
+                            if (isWideSlice) {
+                                // Aceituna
+                                const rx1 = 80 + 32 * Math.cos(midAngle - 0.1);
+                                const ry1 = 80 + 32 * Math.sin(midAngle - 0.1);
+                                svg.appendChild(createCircle(rx1, ry1, 3.5, "#1e293b", "#0f172a"));
+                                
+                                // Pimiento verde
+                                const rx2 = 80 + 44 * Math.cos(midAngle + 0.1);
+                                const ry2 = 80 + 44 * Math.sin(midAngle + 0.1);
+                                svg.appendChild(createVeggieStick(rx2, ry2, midAngle, "#16a34a"));
+                            } else {
+                                const rx = 80 + 38 * Math.cos(midAngle);
+                                const ry = 80 + 38 * Math.sin(midAngle);
+                                svg.appendChild(createVeggieStick(rx, ry, midAngle, "#16a34a"));
+                            }
+                        } else {
+                            // Mixto (Pepperoni + Aceituna)
+                            const rx1 = 80 + 32 * Math.cos(midAngle - 0.08);
+                            const ry1 = 80 + 32 * Math.sin(midAngle - 0.08);
+                            svg.appendChild(createCircle(rx1, ry1, 5, "#dc2626", "#991b1b"));
+                            
+                            const rx2 = 80 + 45 * Math.cos(midAngle + 0.08);
+                            const ry2 = 80 + 45 * Math.sin(midAngle + 0.08);
+                            svg.appendChild(createCircle(rx2, ry2, 3.5, "#1e293b", "#0f172a"));
+                        }
+                    }
+                }
+                
+                // Líneas de corte (divisores de porción)
+                // Primero dibujamos los cortes finos del denominador común actual
+                for (let i = 0; i < totalSlices; i++) {
+                    const angle = (i * 2 * Math.PI) / totalSlices - Math.PI / 2;
+                    const x = 80 + 60 * Math.cos(angle);
+                    const y = 80 + 60 * Math.sin(angle);
+                    
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", "80");
+                    line.setAttribute("y1", "80");
+                    line.setAttribute("x2", x);
+                    line.setAttribute("y2", y);
+                    line.setAttribute("stroke", "#d97706"); // color dorado masa
+                    line.setAttribute("stroke-width", "1.5");
+                    svg.appendChild(line);
+                }
+                
+                // Si la pizza está subdividida (Step 2+), dibujamos cortes gruesos para las porciones originales
+                if (subdiv > 1) {
+                    for (let i = 0; i < den; i++) {
+                        const angle = (i * 2 * Math.PI) / den - Math.PI / 2;
+                        const x = 80 + 60 * Math.cos(angle);
+                        const y = 80 + 60 * Math.sin(angle);
+                        
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", "80");
+                        line.setAttribute("y1", "80");
+                        line.setAttribute("x2", x);
+                        line.setAttribute("y2", y);
+                        line.setAttribute("stroke", "#78350f"); // Marrón más oscuro y grueso
+                        line.setAttribute("stroke-width", "3.5");
+                        svg.appendChild(line);
+                    }
+                }
+                
+                // Borde de la masa crujiente (crust border)
+                const crustOutline = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                crustOutline.setAttribute("cx", "80");
+                crustOutline.setAttribute("cy", "80");
+                crustOutline.setAttribute("r", "60");
+                crustOutline.setAttribute("fill", "none");
+                crustOutline.setAttribute("stroke", "#d97706");
+                crustOutline.setAttribute("stroke-width", "4");
+                svg.appendChild(crustOutline);
+                
+                wrapper.appendChild(svg);
+            }
+            container.appendChild(wrapper);
+        }
+
+        // Crear elementos de Toppings
+        function createCircle(cx, cy, r, fill, stroke) {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            el.setAttribute("cx", cx);
+            el.setAttribute("cy", cy);
+            el.setAttribute("r", r);
+            el.setAttribute("fill", fill);
+            el.setAttribute("stroke", stroke);
+            el.setAttribute("stroke-width", "1");
+            return el;
+        }
+
+        function createVeggieStick(cx, cy, angle, fill) {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            el.setAttribute("x", cx - 2);
+            el.setAttribute("y", cy - 5);
+            el.setAttribute("width", "3.5");
+            el.setAttribute("height", "10");
+            el.setAttribute("rx", "1.5");
+            el.setAttribute("fill", fill);
+            el.setAttribute("transform", `rotate(${(angle * 180) / Math.PI + 45}, ${cx}, ${cy})`);
+            return el;
+        }
+
+        // --- LÓGICA PRINCIPAL DEL RETO ---
         function generateProblem() {
             let d1, d2, n1, n2;
-            // Forzar denominadores diferentes para que siempre tengan que buscar MCM
+            
+            // Forzar que los denominadores sean diferentes
             do {
-                d1 = Math.floor(Math.random() * 8) + 2; // 2 al 9
-                d2 = Math.floor(Math.random() * 8) + 2;
+                d1 = Math.floor(Math.random() * 7) + 2; // 2 al 8
+                d2 = Math.floor(Math.random() * 7) + 2; // 2 al 8
             } while (d1 === d2);
 
             n1 = Math.floor(Math.random() * (d1 - 1)) + 1; // Fracción propia
@@ -337,191 +867,337 @@
             let sumN = newN1 + newN2;
             let cGcd = gcd(sumN, cLcm);
 
-            return { n1, d1, n2, d2, lcm: cLcm, m1, m2, newN1, newN2, sumN, gcd: cGcd, finalN: sumN / cGcd, finalD: cLcm / cGcd };
+            return { 
+                n1, d1, 
+                n2, d2, 
+                lcm: cLcm, 
+                m1, m2, 
+                newN1, newN2, 
+                sumN, 
+                gcd: cGcd, 
+                finalN: sumN / cGcd, 
+                finalD: cLcm / cGcd 
+            };
         }
 
         function initGame() {
             prob = generateProblem();
 
-            // Llenar interfaz principal
-            ui.mainN1.textContent = prob.n1; ui.mainD1.textContent = prob.d1;
-            ui.mainN2.textContent = prob.n2; ui.mainD2.textContent = prob.d2;
-            ui.hintD1.textContent = prob.d1; ui.hintD2.textContent = prob.d2;
+            // Llenar datos de fracciones iniciales en UI
+            ui.displayN1.textContent = prob.n1;
+            ui.displayD1.textContent = prob.d1;
+            ui.displayN2.textContent = prob.n2;
+            ui.displayD2.textContent = prob.d2;
+            
+            // Limpiar datos equivalentes y suma
+            ui.equivDisplay1.classList.add('hidden');
+            ui.equivDisplay2.classList.add('hidden');
+            ui.simpFinalDisplay.classList.add('hidden');
+            ui.frac3Display.classList.remove('hidden');
 
-            // Resetear UI
+            ui.displaySumN.textContent = '?';
+            ui.displaySumD.textContent = '?';
+
+            // Pistas
+            ui.hintD1.textContent = prob.d1;
+            ui.hintD2.textContent = prob.d2;
+
+            // Renderizar pizzas iniciales sin subdivisión
+            renderPizza(ui.pizza1Container, prob.n1, prob.d1, 1, 'pepperoni');
+            renderPizza(ui.pizza2Container, prob.n2, prob.d2, 1, 'veggie');
+            
+            // Pizza 3 vacía
+            renderPizza(ui.pizza3Container, 0, prob.lcm, 1, 'combined');
+
+            // Mostrar/Ocultar avisos de tamaño
+            ui.sizeWarning.classList.remove('hidden');
+            ui.sizeWarning.classList.add('flex');
+            ui.sizeOk.classList.add('hidden');
+            ui.sizeOk.classList.remove('flex');
+
+            // Resetear inputs e interfaz de pasos
             Object.values(ui.inputs).forEach(input => {
                 input.value = '';
                 input.classList.remove('error', 'success');
                 input.disabled = false;
             });
             Object.values(ui.errors).forEach(err => err.style.display = 'none');
-            
-            // Ocultar/Mostrar pasos
+
+            // Mostrar Paso 1, ocultar los demás
             ui.steps.s1.classList.remove('step-hidden');
             ui.steps.s2.classList.add('step-hidden');
             ui.steps.s3.classList.add('step-hidden');
             ui.steps.s4.classList.add('step-hidden');
             ui.steps.success.classList.add('step-hidden');
 
+            // Mostrar botones
             ui.btns.mcm.style.display = 'inline-block';
             ui.btns.eq.style.display = 'inline-block';
             ui.btns.sum.style.display = 'inline-block';
             ui.btns.simp.style.display = 'inline-block';
 
-            updateDots(1);
-            ui.inputs.mcm.focus();
+            updateProgressTabs(1);
+            
+            setTimeout(() => {
+                ui.inputs.mcm.focus();
+            }, 100);
         }
 
-        function updateDots(step) {
-            ui.dots.forEach((dot, index) => {
-                if(index < step) {
-                    dot.classList.remove('bg-gray-300');
-                    dot.classList.add('bg-indigo-500', 'shadow-inner');
+        function updateProgressTabs(currentStep) {
+            for (let i = 1; i <= 4; i++) {
+                const tab = ui.tabs[`t${i}`];
+                const circle = tab.querySelector('span');
+                if (i < currentStep) {
+                    // Completado
+                    tab.classList.remove('opacity-40');
+                    tab.classList.add('opacity-80');
+                    circle.className = "w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold";
+                    circle.textContent = "✓";
+                } else if (i === currentStep) {
+                    // Activo
+                    tab.classList.remove('opacity-40');
+                    tab.classList.add('opacity-100');
+                    circle.className = "w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold";
+                    circle.textContent = i;
                 } else {
-                    dot.classList.add('bg-gray-300');
-                    dot.classList.remove('bg-indigo-500', 'shadow-inner');
+                    // Pendiente
+                    tab.classList.add('opacity-40');
+                    tab.classList.remove('opacity-100', 'opacity-80');
+                    circle.className = "w-6 h-6 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-xs font-bold";
+                    circle.textContent = i;
                 }
-            });
+            }
         }
 
         function showError(inputEl, errorEl, msg) {
+            playSound('error');
             inputEl.classList.remove('error');
-            void inputEl.offsetWidth; // Trigger reflow para reiniciar animación
+            void inputEl.offsetWidth; // Forzar reflow para reiniciar animación
             inputEl.classList.add('error');
             errorEl.innerHTML = msg;
             errorEl.style.display = 'block';
             inputEl.focus();
         }
 
+        // Marcar input como correcto
         function setSuccess(inputEl) {
             inputEl.classList.remove('error');
             inputEl.classList.add('success');
             inputEl.disabled = true;
         }
 
-        function launchConfetti() {
-            confetti({
-                particleCount: 150,
-                spread: 80,
-                origin: { y: 0.6 },
-                colors: ['#6366f1', '#a855f7', '#ec4899', '#22c55e']
-            });
+        function toggleHelpModal(show) {
+            initAudio();
+            const modal = document.getElementById('help-modal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
         }
 
-        // --- MANEJADORES DE PASOS ---
+        // --- MANEJADORES DE CADA PASO ---
 
         // PASO 1: MCM
         function checkMCM() {
-            let val = parseInt(ui.inputs.mcm.value);
+            const val = parseInt(ui.inputs.mcm.value);
             if (val === prob.lcm) {
+                playSound('success');
                 setSuccess(ui.inputs.mcm);
                 ui.errors.mcm.style.display = 'none';
                 ui.btns.mcm.style.display = 'none';
                 
-                // Preparar paso 2
+                // Efecto visual: animar rebanado y subdividir las pizzas en la mesa
+                playSound('slice');
+                renderPizza(ui.pizza1Container, prob.n1, prob.d1, prob.m1, 'pepperoni');
+                renderPizza(ui.pizza2Container, prob.n2, prob.d2, prob.m2, 'veggie');
+
+                // Mostrar equivalencias parciales
+                ui.displayEqD1.textContent = prob.lcm;
+                ui.displayEqD2.textContent = prob.lcm;
+                ui.equivDisplay1.classList.remove('hidden');
+                ui.equivDisplay2.classList.remove('hidden');
+
+                // Actualizar textos informativos
                 ui.mcmDisplays.forEach(el => el.textContent = prob.lcm);
-                ui.steps.s2.classList.remove('step-hidden');
-                updateDots(2);
-                setTimeout(() => ui.inputs.eqN1.focus(), 300);
+                ui.sizeWarning.classList.add('hidden');
+                ui.sizeWarning.classList.remove('flex');
+                ui.sizeOk.classList.remove('hidden');
+                ui.sizeOk.classList.add('flex');
+
+                // Avanzar al paso 2
+                setTimeout(() => {
+                    ui.steps.s2.classList.remove('step-hidden');
+                    updateProgressTabs(2);
+                    ui.inputs.eqN1.focus();
+                    ui.steps.s2.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 400);
             } else {
-                // Pista didáctica
+                // Pista de múltiplos
                 let mult1 = [prob.d1, prob.d1*2, prob.d1*3].join(', ');
                 let mult2 = [prob.d2, prob.d2*2, prob.d2*3].join(', ');
-                showError(ui.inputs.mcm, ui.errors.mcm, `¡Pista! Múltiplos de ${prob.d1} (${mult1}...) y de ${prob.d2} (${mult2}...). ¿Cuál coincide primero?`);
+                showError(
+                    ui.inputs.mcm, 
+                    ui.errors.mcm, 
+                    `💡 Pista: Los múltiplos de <b>${prob.d1}</b> son (${mult1}...) y los de <b>${prob.d2}</b> son (${mult2}...). Encuentra el primero que coincida.`
+                );
             }
         }
 
-        // PASO 2: Equivalentes
+        // PASO 2: Fracciones Equivalentes
         function checkEQ() {
-            let v1 = parseInt(ui.inputs.eqN1.value);
-            let v2 = parseInt(ui.inputs.eqN2.value);
+            const v1 = parseInt(ui.inputs.eqN1.value);
+            const v2 = parseInt(ui.inputs.eqN2.value);
             let isOk = true;
 
             if (v1 !== prob.newN1) {
-                showError(ui.inputs.eqN1, ui.errors.eq, `¡Ojo a la primera! Si multiplicaste abajo ${prob.d1} × ${prob.m1} = ${prob.lcm}, debes hacer arriba ${prob.n1} × ${prob.m1}.`);
+                showError(ui.inputs.eqN1, ui.errors.eq, `💡 Pista (Pepperoni): Si multiplicaste abajo por <b>${prob.m1}</b> (${prob.d1} × ${prob.m1} = ${prob.lcm}), multiplica arriba por el mismo número: <b>${prob.n1} × ${prob.m1}</b>.`);
                 isOk = false;
             } else if (v2 !== prob.newN2) {
                 setSuccess(ui.inputs.eqN1);
-                showError(ui.inputs.eqN2, ui.errors.eq, `Primera correcta 👍. En la segunda: multiplica arriba ${prob.n2} × ${prob.m2}.`);
+                showError(ui.inputs.eqN2, ui.errors.eq, `👍 ¡Pepperoni listo! Ahora para Vegetales: Si abajo multiplicaste por <b>${prob.m2}</b> (${prob.d2} × ${prob.m2} = ${prob.lcm}), multiplica arriba: <b>${prob.n2} × ${prob.m2}</b>.`);
                 isOk = false;
             }
 
             if (isOk) {
+                playSound('success');
                 setSuccess(ui.inputs.eqN1);
                 setSuccess(ui.inputs.eqN2);
                 ui.errors.eq.style.display = 'none';
                 ui.btns.eq.style.display = 'none';
 
+                // Mostrar numeradores equivalentes arriba
+                document.getElementById('display-eq-n1').textContent = prob.newN1;
+                document.getElementById('display-eq-n2').textContent = prob.newN2;
+
                 // Preparar paso 3
                 ui.sumDisplayN1.textContent = prob.newN1;
                 ui.sumDisplayN2.textContent = prob.newN2;
-                ui.steps.s3.classList.remove('step-hidden');
-                updateDots(3);
-                setTimeout(() => ui.inputs.sumN.focus(), 300);
+
+                setTimeout(() => {
+                    ui.steps.s3.classList.remove('step-hidden');
+                    updateProgressTabs(3);
+                    ui.inputs.sumN.focus();
+                    ui.steps.s3.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 400);
             }
         }
 
-        // PASO 3: Suma
+        // PASO 3: Sumar
         function checkSum() {
-            let val = parseInt(ui.inputs.sumN.value);
+            const val = parseInt(ui.inputs.sumN.value);
             if (val === prob.sumN) {
+                playSound('success');
                 setSuccess(ui.inputs.sumN);
                 ui.errors.sum.style.display = 'none';
                 ui.btns.sum.style.display = 'none';
 
-                // Verificar si necesita simplificar
+                // Mostrar suma arriba en el plato de entrega
+                ui.displaySumN.textContent = prob.sumN;
+                ui.displaySumD.textContent = prob.lcm;
+
+                // Renderizar la pizza resultante en el plato de entrega
+                renderPizza(ui.pizza3Container, prob.sumN, prob.lcm, 1, 'combined');
+
+                // Puntuación y Racha
+                score += 10;
+                streak += 1;
+                localStorage.setItem('pizza_fraction_score', score);
+                localStorage.setItem('pizza_fraction_streak', streak);
+                document.getElementById('score-display').textContent = score;
+                document.getElementById('streak-display').textContent = streak;
+
+                // Verificar si necesita simplificarse
                 if (prob.gcd === 1) {
-                    // Si ya es irreducible, saltar paso 4 y ganar
-                    updateDots(4);
-                    ui.steps.success.classList.remove('step-hidden');
-                    launchConfetti();
+                    // Ya está simplificada. Ganar de inmediato.
+                    updateProgressTabs(5);
+                    setTimeout(() => {
+                        ui.steps.success.classList.remove('step-hidden');
+                        playSound('victory');
+                        launchConfetti();
+                        ui.steps.success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 400);
                 } else {
-                    // Preparar paso 4
+                    // Requiere simplificación (Paso 4)
                     ui.simpDisplayN.textContent = prob.sumN;
-                    ui.simpDesc.innerHTML = `Pista: Ambos números se pueden dividir exactamente entre <b class="text-amber-600 text-lg">${prob.gcd}</b>.`;
-                    ui.steps.s4.classList.remove('step-hidden');
-                    updateDots(4);
-                    setTimeout(() => ui.inputs.simpN.focus(), 300);
+                    ui.simpDesc.innerHTML = `💡 Pista: ¡Ambas partes del plato se pueden dividir exactamente por <b>${prob.gcd}</b>! Divide para simplificar la pizza.`;
+                    
+                    setTimeout(() => {
+                        ui.steps.s4.classList.remove('step-hidden');
+                        updateProgressTabs(4);
+                        ui.inputs.simpN.focus();
+                        ui.steps.s4.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 400);
                 }
             } else {
-                showError(ui.inputs.sumN, ui.errors.sum, `Solo suma: ${prob.newN1} + ${prob.newN2}. ¡Tú puedes!`);
+                showError(ui.inputs.sumN, ui.errors.sum, `💡 Solo tienes que sumar los dos numeradores ya igualados: <b>${prob.newN1} + ${prob.newN2}</b>.`);
             }
         }
 
         // PASO 4: Simplificar
         function checkSimp() {
-            let vN = parseInt(ui.inputs.simpN.value);
-            let vD = parseInt(ui.inputs.simpD.value);
+            const vN = parseInt(ui.inputs.simpN.value);
+            const vD = parseInt(ui.inputs.simpD.value);
             let isOk = true;
 
             if (vN !== prob.finalN || vD !== prob.finalD) {
                 if (vN !== prob.finalN) {
-                    showError(ui.inputs.simpN, ui.errors.simp, `El numerador está mal. Divide ${prob.sumN} ÷ ${prob.gcd}`);
+                    showError(ui.inputs.simpN, ui.errors.simp, `💡 El numerador simplificado no es correcto. Divide <b>${prob.sumN} ÷ ${prob.gcd}</b>.`);
                 } else {
                     setSuccess(ui.inputs.simpN);
-                    showError(ui.inputs.simpD, ui.errors.simp, `El denominador está mal. Divide ${prob.lcm} ÷ ${prob.gcd}`);
+                    showError(ui.inputs.simpD, ui.errors.simp, `💡 El denominador simplificado no es correcto. Divide <b>${prob.lcm} ÷ ${prob.gcd}</b>.`);
                 }
                 isOk = false;
             }
 
             if (isOk) {
+                playSound('success');
                 setSuccess(ui.inputs.simpN);
                 setSuccess(ui.inputs.simpD);
                 ui.errors.simp.style.display = 'none';
                 ui.btns.simp.style.display = 'none';
-                
-                ui.steps.success.classList.remove('step-hidden');
-                launchConfetti();
+
+                // Mostrar la fracción final y animar la pizza
+                ui.displayFinalN.textContent = prob.finalN;
+                ui.displayFinalD.textContent = prob.finalD;
+                ui.simpFinalDisplay.classList.remove('hidden');
+
+                // Redibujar la pizza simplificada (se fusionan los cortes!)
+                renderPizza(ui.pizza3Container, prob.finalN, prob.finalD, 1, 'combined');
+
+                // Puntuación adicional
+                score += 5;
+                localStorage.setItem('pizza_fraction_score', score);
+                document.getElementById('score-display').textContent = score;
+
+                // Pantalla de éxito
+                updateProgressTabs(5);
+                setTimeout(() => {
+                    ui.steps.success.classList.remove('step-hidden');
+                    playSound('victory');
+                    launchConfetti();
+                    ui.steps.success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 400);
             }
         }
 
-        // --- EVENTOS ---
+        // Confetti
+        function launchConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.65 },
+                colors: ['#f59e0b', '#d97706', '#ef4444', '#22c55e', '#ec4899']
+            });
+        }
+
+        // --- ASIGNACIÓN DE EVENTOS ---
         ui.btns.mcm.addEventListener('click', checkMCM);
         ui.btns.eq.addEventListener('click', checkEQ);
         ui.btns.sum.addEventListener('click', checkSum);
         ui.btns.simp.addEventListener('click', checkSimp);
 
-        // Permitir usar "Enter" en los inputs
+        // Activar soporte para Tecla Enter
         ui.inputs.mcm.addEventListener('keypress', e => { if (e.key === 'Enter') checkMCM(); });
         ui.inputs.eqN1.addEventListener('keypress', e => { if (e.key === 'Enter') ui.inputs.eqN2.focus(); });
         ui.inputs.eqN2.addEventListener('keypress', e => { if (e.key === 'Enter') checkEQ(); });
@@ -529,8 +1205,10 @@
         ui.inputs.simpN.addEventListener('keypress', e => { if (e.key === 'Enter') ui.inputs.simpD.focus(); });
         ui.inputs.simpD.addEventListener('keypress', e => { if (e.key === 'Enter') checkSimp(); });
 
-        // Iniciar el primer juego
-        window.onload = initGame;
+        // Cargar juego inicial al cargar ventana
+        window.onload = () => {
+            initGame();
+        };
     </script>
 </body>
 </html>
