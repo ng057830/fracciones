@@ -280,17 +280,39 @@
                         <div id="pizza3-container" class="flex justify-center items-center min-h-[130px]">
                             <!-- SVG Pizza 3 -->
                         </div>
-                        <div class="mt-3">
-                            <div class="frac text-amber-600" id="frac3-display">
-                                <div class="frac-num" id="display-sum-n">?</div>
-                                <div class="frac-den" id="display-sum-d">?</div>
+                        <div class="mt-3 flex flex-col items-center">
+                            <!-- Suma Fraction & Mixed Sum Display -->
+                            <div class="flex items-center justify-center flex-wrap">
+                                <div class="frac text-amber-600" id="frac3-display">
+                                    <div class="frac-num" id="display-sum-n">?</div>
+                                    <div class="frac-den" id="display-sum-d">?</div>
+                                </div>
+                                <!-- Número Mixto para la Suma -->
+                                <div id="mixed-sum-display" class="text-lg font-black text-amber-600 items-center hidden ml-1.5 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100 shadow-sm">
+                                    <span class="mr-1">=</span>
+                                    <span id="mixed-sum-int" class="text-2xl text-amber-700 font-extrabold mr-0.5">1</span>
+                                    <div class="frac text-amber-700 text-xs">
+                                        <div class="frac-num" id="mixed-sum-num">?</div>
+                                        <div class="frac-den" id="mixed-sum-den">?</div>
+                                    </div>
+                                </div>
                             </div>
+                            
                             <!-- Para mostrar la simplificación -->
-                            <div id="simp-final-display" class="text-lg font-black text-gray-400 inline-flex items-center hidden">
+                            <div id="simp-final-display" class="text-lg font-black text-gray-400 flex items-center justify-center flex-wrap hidden mt-2">
                                 <span class="mx-1">→</span>
                                 <div class="frac text-emerald-600">
                                     <div class="frac-num" id="display-final-n">?</div>
                                     <div class="frac-den" id="display-final-d">?</div>
+                                </div>
+                                <!-- Número Mixto para la Simplificada -->
+                                <div id="mixed-final-display" class="text-lg font-black text-emerald-600 items-center hidden ml-1.5 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100 shadow-sm">
+                                    <span class="mr-1">=</span>
+                                    <span id="mixed-final-int" class="text-2xl text-emerald-700 font-extrabold mr-0.5">1</span>
+                                    <div class="frac text-emerald-700 text-xs">
+                                        <div class="frac-num" id="mixed-final-num">?</div>
+                                        <div class="frac-den" id="mixed-final-d">?</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -846,6 +868,37 @@
             return el;
         }
 
+        // Mostrar número mixto si la fracción es impropia
+        function updateMixedDisplay(num, den, prefix) {
+            const container = document.getElementById(`mixed-${prefix}-display`);
+            if (!container) return;
+            const intEl = document.getElementById(`mixed-${prefix}-int`);
+            const fracNumEl = document.getElementById(`mixed-${prefix}-num`);
+            const fracDenEl = document.getElementById(`mixed-${prefix}-den`);
+            const fracPart = container.querySelector('.frac');
+            
+            if (num > den) {
+                const whole = Math.floor(num / den);
+                const rem = num % den;
+                
+                intEl.textContent = whole;
+                
+                if (rem === 0) {
+                    fracPart.style.display = 'none';
+                } else {
+                    fracPart.style.display = 'inline-flex';
+                    fracNumEl.textContent = rem;
+                    fracDenEl.textContent = den;
+                }
+                
+                container.classList.remove('hidden');
+                container.classList.add('flex');
+            } else {
+                container.classList.add('hidden');
+                container.classList.remove('flex');
+            }
+        }
+
         // --- LÓGICA PRINCIPAL DEL RETO ---
         function generateProblem() {
             let d1, d2, n1, n2;
@@ -905,6 +958,11 @@
 
             document.getElementById('display-final-n').textContent = '?';
             document.getElementById('display-final-d').textContent = '?';
+
+            document.getElementById('mixed-sum-display').classList.add('hidden');
+            document.getElementById('mixed-sum-display').classList.remove('flex');
+            document.getElementById('mixed-final-display').classList.add('hidden');
+            document.getElementById('mixed-final-display').classList.remove('flex');
 
             // Pistas
             ui.hintD1.textContent = prob.d1;
@@ -1106,6 +1164,7 @@
 
                 // Renderizar la pizza resultante en el plato de entrega
                 renderPizza(ui.pizza3Container, prob.sumN, prob.lcm, 1, 'combined');
+                updateMixedDisplay(prob.sumN, prob.lcm, 'sum');
 
                 // Puntuación y Racha
                 score += 10;
@@ -1172,6 +1231,7 @@
 
                 // Redibujar la pizza simplificada (se fusionan los cortes!)
                 renderPizza(ui.pizza3Container, prob.finalN, prob.finalD, 1, 'combined');
+                updateMixedDisplay(prob.finalN, prob.finalD, 'final');
 
                 // Puntuación adicional
                 score += 5;
